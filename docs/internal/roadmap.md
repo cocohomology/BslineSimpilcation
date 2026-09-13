@@ -1,119 +1,155 @@
 # Short-Horizon Roadmap — Internal
 
-This file is intentionally volatile. It describes only the next few research sessions. It is not a commitment to a fixed theory.
+This file is intentionally volatile. It describes only the next few research sessions and may change whenever a proof or counterexample changes priorities.
 
 ## Phase 0 — Initialization
 
 Status: complete.
 
-## Phase 1 — Make the D2 reduction exact
+## Phase 1 — Exact D2 reduction and synchronized error
 
-### Task 1.1 — Reconstruction structure
+### Task 1.1 — Reconstruction / complexity structure
 
 Status: **complete (Session 0002)**.
 
 Established:
 - \(D^2:S^1_3\to PL_{\rm disc}\) is onto with affine kernel;
-- two vector constraints fix reconstruction uniquely;
 - jump/kink structure of \(C''\) exactly records minimal cubic knot multiplicity;
-- weighted PL complexity \(\kappa=K+2J\) gives \(N_{\rm ctrl}=4+\kappa\) for a minimal open/clamped cubic.
+- \(\kappa=K+2J\), with \(N_{\rm ctrl}=4+\kappa\) for a minimal open/clamped cubic.
 
 ### Task 1.2a — Fixed-endpoint Green kernel
 
 Status: **complete (Session 0003)**.
 
-Established for
+Established:
 \[
-E''=e,\qquad E(a)=E(b)=0:
+E''=e,\ E(a)=E(b)=0
+\quad\Longrightarrow\quad
+E=G_De,
 \]
+with explicit Dirichlet kernel, and
 \[
-K_D(t,s)=-\frac{(\min\{t,s\}-a)(b-\max\{t,s\})}{b-a}.
+N_G(e)=\|E\|_\infty
 \]
+exactly equal to synchronized positional error and therefore a Hausdorff upper bound.
 
-Also established:
-\[
-N_G(e):=\|G_De\|_\infty
-=\|C-\widetilde C\|_{\infty,\mathrm{sync}},
-\]
-and
-\[
-d_H(\operatorname{Im}C,\operatorname{Im}\widetilde C)\le N_G(e).
-\]
+### Task 1.2c — PL-specific direct evaluation of \(N_G\)
 
-The kernel is one-signed and tent-shaped in the integration variable, preserving signed/vector cancellation and location information.
+Status: **complete (Session 0004)**.
 
-### Task 1.2c — PL-specific exact/certified evaluation of \(N_G\)
+Established:
+- one global endpoint-correction moment;
+- piecewise-cubic \(E\) on the union partition;
+- vector Euclidean extrema from degree-5 equations \(E\cdot E'=0\);
+- scalar case needs only quadratic derivative roots;
+- exact/certified route by real-root isolation;
+- robust certified route by cubic Bézier convex-hull subdivision;
+- structural linear scaling in the number of union spans, with fixed polynomial degree.
 
-**Next session only.** This task is moved ahead of global \(L^p\) constants because Session 0003 suggests direct evaluation may be cheap enough to make those bounds secondary.
-
-Goals:
-- assume \(e\) is piecewise affine on the union partition of original/candidate breakpoints;
-- derive the polynomial form of \(E=G_De\) on each span;
-- determine the degree of the stationarity equation for scalar and vector norms;
-- identify how to include span boundaries and jumps in \(e\);
-- give a certified evaluation strategy in pseudocode-level mathematics only;
-- estimate structural complexity in the number of spans;
-- perform a goal-alignment review: is this genuinely easier than curve-to-curve Hausdorff evaluation?
-
-Success criterion:
-- a clean finite procedure for exact/certified \(N_G\) evaluation using low-degree polynomial root isolation/subdivision, with no dense sampling requirement.
-
-Failure criterion:
-- global coupling or vector norm maximization makes certification too expensive to preserve the hoped-for advantage.
-
-Do not yet optimize breakpoint locations or design a complete simplification algorithm.
+Consequence: ordinary \(L^p\) bounds are no longer needed as the main synchronized metric merely for evaluability.
 
 ### Task 1.2b — Sharp \(L^p\to L^\infty\) bounds
 
-Status: open but deprioritized.
+Status: open but parked.
 
-Return here only if needed to:
-- compare against Lyche-style norm bounds;
-- obtain cheap pruning bounds;
-- quantify how much direct \(N_G\) evaluation improves over global norms.
+Return only if needed for:
+- very cheap pruning;
+- comparison with Lyche-style discrete/continuous norm estimates;
+- quantitative conservatism examples.
 
-## Phase 2 — Attack ordinary Lp as a ranking metric
+Do not let this side task delay the parameterization problem.
 
-Status: waiting for direct \(N_G\) evaluation.
+---
 
-Later targets:
-- cancellation pair examples;
-- short-span scaling;
-- ranking reversals between \(L^p\) and \(N_G\);
-- decide whether an intermediate cheap surrogate is actually needed.
+## Phase 2 — Parameterization: first local test
 
-## Phase 3 — Parametrization
+### Task 2.1 — First-order tangential quotient
+
+**Next session only.**
+
+Setup:
+\[
+\widetilde C(t)=C(t)+E(t),
+\]
+with regular \(C\) and small \(E\). Let
+\[
+T=\frac{C'}{\|C'\|},
+\qquad
+E=E_\parallel+E_\perp.
+\]
+
+Goal:
+- seek a small parameter correction
+  \[
+  \phi(t)=t+\eta(t)
+  \]
+  that absorbs \(E_\parallel\) to first order;
+- derive the sign/formula for \(\eta\) from a Taylor expansion rather than intuition;
+- derive an explicit remainder estimate involving quantities such as \(\|E\|,\|E'\|,\|C'\|^{-1},\|C''\|\);
+- give a simple sufficient condition for \(\phi'>0\);
+- check endpoint behavior under the current endpoint-preserving gauge;
+- attack the result with a pure tangential/reparameterization example.
+
+Success criterion:
+- a reviewed local statement showing that tangential synchronized error is removable to first order and that the first-order residual is the normal component.
+
+Failure criterion:
+- even infinitesimal reparameterization cannot cleanly isolate the normal component without assumptions too strong for CAD use;
+- remainder depends on quantities that become uncontrollable in realistic spline inputs.
+
+Out of scope:
+- global nearest-point uniqueness;
+- full Degen normal correspondence;
+- Hausdorff/Fréchet equivalence;
+- source code.
+
+### Task 2.2 — Decide whether normal-projected Green error survives
+
+Postponed until Task 2.1 is reviewed.
+
+Only if Task 2.1 succeeds, study
+\[
+N_{G,\perp}(e)=\sup_t\|P_{N(t)}G_De(t)\|.
+\]
+Questions:
+- precise null directions;
+- reference-curve dependence;
+- computability on cubic \(E\);
+- whether a rigorous higher-order correction can turn it into a certified geometric bound.
+
+---
+
+## Phase 3 — Geometry-aware local certification
 
 Status: postponed.
 
-Only enter after the synchronized metric is both mathematically understood and computationally viable.
+Possible tools only if demanded by Phase 2:
+- normal graphs;
+- tubular neighborhoods/reach;
+- Degen-style normal correspondence;
+- order-preserving reparameterization.
 
-Possible directions remain open; do not assume normal projection is the only route.
+Do not open all of these directions at once.
 
-## Phase 4 — Geometry-aware comparison / certification
+---
+
+## Phase 4 — Candidate simplification algorithm
 
 Status: postponed.
 
-The final CAD criterion remains geometric. Potential routes may involve normal correspondence, Fréchet-like order-preserving correspondence, reach/tubular neighborhoods, or something not yet identified.
+Only after a geometry-aware metric/certification route survives:
+- formulate weighted breakpoint simplification in the PL \(C''\) domain;
+- compare delete/merge/move/free-breakpoint primitives;
+- write pseudocode before numerical implementation;
+- use computation to falsify or measure sharpness, not replace proof.
 
-## Phase 5 — Simplification algorithm
-
-Status: postponed.
-
-If the metric theory survives:
-- formulate breakpoint removal/merge/move primitives;
-- write pseudocode before any implementation;
-- use numerical tests primarily to falsify or measure sharpness.
-
-No source code unless explicitly requested.
+---
 
 ## Side-branch parking lot
 
 - optimized affine reconstruction instead of fixed endpoints;
-- force continuity of \(q\) to obtain \(C^2\) candidates;
+- force continuous \(q\) for \(C^2\) candidates;
 - closed/periodic curves and compatibility constraints;
-- parameter normalization / alternative gauges;
-- sharp global operator constants;
-- potential convex formulations for fixed candidate partitions.
-
-These are deliberately parked to keep each research session narrow.
+- classical sharp \(L^p\) Green-operator constants;
+- ranking-reversal examples between \(L^p\) and direct \(N_G\);
+- convexity/optimization consequences of linear \(G_D\).

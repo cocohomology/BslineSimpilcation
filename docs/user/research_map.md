@@ -1,122 +1,119 @@
 # Research Map — User-Facing
 
-This document is a high-level map, not a fixed plan. Sections may be reordered, merged, expanded, or abandoned as the research evolves.
+This is a high-level map, not a fixed plan. Sections may be reordered, merged, expanded, or abandoned as the research evolves.
 
 ## A. Core reduction — FOUNDATION ESTABLISHED
 
-Study the map
-
+Study
 \[
 C\mapsto C''
 \]
-
 for \(C^1\) cubic splines.
 
-Session 0002 established the exact algebraic structure:
-
+Established:
 \[
 S^1_3/\mathcal P_1\cong PL_{\rm disc}.
 \]
-
-The second derivative is a piecewise-linear object with possible jumps, and every such object integrates back to a \(C^1\) cubic after fixing two vector integration constants.
+Every admissible piecewise-affine second derivative integrates back to a \(C^1\) cubic after fixing two vector integration constants.
 
 The singularity type of \(C''\) records minimal cubic knot multiplicity:
 - continuous kink -> simple knot;
 - jump -> double knot;
 - no kink/jump -> redundant breakpoint.
 
-With \(K\) continuous kinks and \(J\) jumps,
+With \(K\) kinks and \(J\) jumps,
 \[
 \kappa=K+2J,
 \qquad
-N_{\rm ctrl}=4+\kappa
+N_{\rm ctrl}=4+\kappa.
 \]
-for a minimal open/clamped cubic representation.
 
-This means the D2-domain is not merely a convenient visualization: it carries the fixed-degree representation complexity exactly.
+The remaining affine freedom is handled for now by preserving both curve endpoints.
 
-Remaining issue inside this block: reconstruction requires a choice of affine gauge (e.g. fixed endpoints).
-
-## B. Error transport through integration — CURRENT FOCUS
+## B. Error transport through integration — SYNCHRONIZED BASELINE ESTABLISHED
 
 Let
 \[
 e=C''-\widetilde C''.
 \]
-
-After fixing the affine reconstruction mode, study the operator mapping \(e\) to the synchronized positional error \(E=C-\widetilde C\).
-
-The next narrow target is only the two-endpoint gauge
+Under fixed endpoints,
 \[
-E(a)=E(b)=0,
+E=C-\widetilde C=G_De
 \]
-and its exact Green kernel.
+with an explicit Dirichlet Green kernel. Therefore
+\[
+N_G(e)=\|G_De\|_\infty
+\]
+is exactly synchronized positional error and a rigorous Hausdorff upper bound.
 
-Later targets, only if the kernel viewpoint remains useful:
-- sharp operator bounds for relevant \(L^p\) norms;
-- exact/certified evaluation for piecewise-linear \(e\);
-- examples where \(L^p\) is provably over-conservative because of cancellation.
+For PL \(e\), this exact quantity is also directly certifiable:
+- \(E\) is piecewise cubic;
+- vector extrema reduce to roots of degree-at-most-five equations \(E\cdot E'=0\);
+- alternatively, cubic Bézier convex-hull bounds plus subdivision give a robust certified tolerance test.
 
-## C. Geometry-aware error
+So the synchronized metric is both exact and algebraically simple. Global \(L^p\) bounds are now secondary rather than central.
 
-Investigate how to reduce sensitivity to parametrization while preserving computability.
+A minimal Green-function refresher is stored in `docs/user/background/green_functions.md` for later reading and for inclusion in any future self-contained TeX note.
 
-Candidate directions remain deliberately open:
-- normal projection of integrated error;
-- normal graph / tubular-neighborhood representation;
+## C. Geometry-aware error — CURRENT FRONTIER
+
+The dominant weakness is now parameterization.
+
+Two curves can be geometrically very close while corresponding parameter points differ largely in the tangential direction. The next question is intentionally local:
+
+> Can a small monotone reparameterization remove tangential synchronized error to first order, so that the normal component is the first-order geometric residual?
+
+Only after that local statement is proved and attacked by counterexamples should the project decide whether to pursue:
+- normal-projected Green error;
+- normal graph/tubular-neighborhood theory;
 - Degen-style normal correspondence;
-- order-preserving reparametrization (Fréchet-type viewpoint);
-- other gauges or quotient constructions if the current candidates fail.
+- order-preserving reparameterization / Fréchet-type ideas;
+- some different construction suggested by failures.
 
-Primary question:
-
-> Can one obtain a computable quantity that is closer to geometric error than synchronized parameter error, yet remains structured enough for optimization in the piecewise-linear \(C''\)-domain?
-
-This block is postponed until the synchronized baseline is understood.
+No route is privileged in advance.
 
 ## D. Counterexample program
 
-Every candidate metric should eventually be attacked by:
-- pure reparametrization of a geometrically unchanged curve;
+Every geometry-aware candidate should eventually face:
+- identical or nearly identical geometry with nonlinear reparameterization;
 - very short knot spans with large second derivative;
-- cancellation between neighboring second-derivative errors;
+- cancellation between neighboring derivative errors;
 - nearly straight segments;
-- high curvature with small positional deviation;
-- local backtracking / correspondence ambiguity;
-- near self-approach of the curve;
-- discontinuous \(C''\) caused by double knots.
+- high-curvature but small positional deviations;
+- local backtracking/correspondence ambiguity;
+- near self-approach;
+- double-knot jumps;
+- large tangential synchronized error with small true geometric error.
 
-The exact list is not sacred; add new counterexamples whenever a proof exposes a new weakness.
+## E. Low-complexity approximation of \(C''\)
 
-## E. Low-complexity approximation of C''
-
-Only after the error metric is sufficiently understood:
-- formulate the reduced approximation problem for PL vector functions;
-- respect the weighted complexity \(\kappa=K+2J\), not merely unique breakpoint count;
-- compare breakpoint deletion, merge, movement, and free-breakpoint fitting;
-- derive pseudocode before any code test.
+Only after the geometry-aware error question is sufficiently understood:
+- formulate the PL approximation problem using weighted complexity \(\kappa=K+2J\);
+- compare deletion, merge, breakpoint movement, and free-breakpoint fitting;
+- exploit exact/certified synchronized Green evaluation where useful;
+- write pseudocode before any implementation.
 
 No source-code implementation is planned at this stage.
 
 ## F. Certification against geometry
 
-The ultimate CAD requirement remains geometric tolerance.
+The final CAD criterion remains geometric tolerance.
 
-Possible end-state (not a commitment):
+A possible end-state is:
 
-1. optimize a tractable intermediate quantity in the \(C''\)-domain;
+1. optimize a tractable metric in the \(C''\) domain;
 2. reconstruct the cubic candidate;
-3. certify final geometric error with Hausdorff or a rigorous surrogate;
+3. certify geometric error with a rigorous local/global mechanism;
 4. refine only where certification fails.
 
-If research shows a better architecture, replace this plan.
+This is not a commitment. If the parameterization research suggests a cleaner architecture, replace it.
 
 ## G. Stage-level note criterion
 
-A full TeX note should be created only when at least one of the following occurs:
-- a new useful theorem is proved with a coherent chain of lemmas;
-- a candidate metric is characterized sufficiently well to justify a new algorithmic framework;
-- a major negative theorem rules out a broad class of approaches;
-- theory plus pseudocode forms a self-contained method worth presenting to the user.
+Write a full TeX note only when at least one of the following occurs:
+- a useful theorem chain survives review and has meaningful geometric consequence;
+- a geometry-aware metric/framework becomes coherent enough to justify an algorithmic route;
+- a major negative theorem closes a broad family of ideas;
+- theory plus pseudocode forms a self-contained method worth independent reading.
 
-The Session 0002 D2 theorem is important but currently treated as foundational rather than a stage-level TeX breakthrough.
+When such a note is written, it should include a short introduction to Green functions/kernels rather than assuming that background.

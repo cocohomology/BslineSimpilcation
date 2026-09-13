@@ -2,26 +2,26 @@
 
 ## Current narrow problem
 
-Work with regular \(C^1\), cubic, non-rational spline curves \(C:[a,b]\to\mathbb R^d\). Algebraic statements below do not require regularity; regularity will matter when geometric correspondence enters.
+Work with regular \(C^1\), cubic, non-rational spline curves \(C:[a,b]\to\mathbb R^d\), using the endpoint-preserving gauge unless explicitly stated otherwise.
 
 Let
 \[
 q=C'',\qquad \widetilde q=\widetilde C'',\qquad e=q-\widetilde q,
+\qquad E=C-\widetilde C.
 \]
-and use the endpoint-preserving gauge unless explicitly stated otherwise.
 
 ---
 
 ## Stable foundation
 
-### F1. Exact D2 reduction — established in Session 0002
+### F1. Exact D2 reduction — Session 0002
 
 \[
 D^2:S^1_3\to PL_{\rm disc}
 \]
-is onto with kernel \(\mathcal P_1\). After fixing two vector integration constants, every discontinuous PL candidate reconstructs uniquely to a \(C^1\) cubic.
+is onto with kernel \(\mathcal P_1\). After fixing two vector integration constants, every discontinuous PL second derivative reconstructs uniquely to a \(C^1\) cubic.
 
-Minimal cubic knot multiplicity is encoded exactly by singularities of \(q=C''\):
+Minimal cubic knot multiplicity is encoded exactly by \(q=C''\):
 - jump -> double knot;
 - continuous kink -> simple knot;
 - neither -> redundant breakpoint.
@@ -31,60 +31,78 @@ If \(K\) is the number of continuous kinks and \(J\) the number of jumps,
 \kappa(q)=K+2J,
 \qquad N_{\rm ctrl}=4+\kappa(q)
 \]
-for a minimal open/clamped cubic representation.
+for a minimal open/clamped cubic.
 
-### F2. Fixed-endpoint Green operator — established in Session 0003
+### F2. Fixed-endpoint Green operator — Session 0003
 
 For
 \[
 E''=e,\qquad E(a)=E(b)=0,
 \]
-write \(L=b-a\). Then
 \[
-E(t)=G_De(t)=\int_a^b K_D(t,s)e(s)\,ds,
+E(t)=G_De(t)=\int_a^bK_D(t,s)e(s)\,ds,
 \]
-where
+with
 \[
-K_D(t,s)=
--\frac{(\min\{t,s\}-a)(b-\max\{t,s\})}{L}.
+K_D(t,s)=-\frac{(\min\{t,s\}-a)(b-\max\{t,s\})}{b-a}.
 \]
-
-Properties reviewed:
-- \(K_D\) is symmetric;
-- \(K_D\le0\) in the interior;
-- it vanishes at both endpoints;
-- after normalization, the operator scales like \(L^2\), as expected from two integrations;
-- \(-K_D(t,\cdot)\) is a positive piecewise-linear tent weight.
-
 Define
 \[
-N_G(e):=\|G_De\|_\infty.
+N_G(e)=\|G_De\|_\infty.
 \]
-Under the endpoint gauge,
+Then
 \[
-N_G(e)=\|C-\widetilde C\|_{\infty,\text{synchronized}},
-\]
-and therefore
-\[
+N_G(e)=\|C-\widetilde C\|_{\infty,\mathrm{sync}},
+\qquad
 d_H(\operatorname{Im}C,\operatorname{Im}\widetilde C)\le N_G(e).
 \]
 
-The operator preserves signed/vector cancellation and location information that a single global \(L^p\) number discards. It does **not** solve reparametrization.
+### F3. PL-specific exact/certified evaluation — Session 0004
 
-Detailed derivation: `docs/internal/derivations/fixed_endpoint_green.md`.
+On the union partition \(a=x_0<\cdots<x_n=b\), write
+\[
+e(t)=\alpha_i+\beta_i(t-x_i).
+\]
+The endpoint correction requires only
+\[
+E'(a)=-\frac1{b-a}\int_a^b(b-s)e(s)\,ds.
+\]
+Then on each span, with \(h=t-x_i\),
+\[
+E(t)=P_i+V_i h+\frac12\alpha_i h^2+\frac16\beta_i h^3.
+\]
+Thus \(E\) is piecewise cubic and \(E'\) piecewise quadratic.
+
+For Euclidean vector error,
+\[
+F(t)=\|E(t)\|^2,
+\qquad
+F'(t)=2E(t)\cdot E'(t),
+\]
+and the stationarity polynomial has degree at most five, generically exactly five. Hence \(N_G\) is obtained from span boundaries plus the real roots of one fixed-degree quintic per span.
+
+Two certification routes are now available:
+
+1. fixed-degree real-root isolation of \(E\cdot E'\);
+2. cubic Bézier convex-hull bounds with de Casteljau subdivision, with root isolation as an exact-boundary fallback.
+
+Structural cost is one global moment + a linear pass + \(O(n)\) fixed-degree local subproblems. This is not a uniform bit-complexity claim.
+
+Detailed derivation: `docs/internal/derivations/pl_green_evaluation.md`.
 
 ---
 
 ## Current interpretation
 
-The D2 route now has two exact pieces:
+The synchronized part of the D2 framework is now unusually clean:
 
-1. representation complexity is exact in the \(q=C''\) domain;
-2. synchronized positional error under fixed endpoints is exact through a linear Green operator in the same domain.
+1. **complexity** is represented exactly by PL jump/kink structure;
+2. **endpoint-preserving synchronized positional error** is represented exactly by the Green operator;
+3. **that exact error can be certified directly** using low-degree univariate polynomial geometry.
 
-This is stronger than a heuristic reduction. The unresolved issue is whether this exact structure leads to an error objective that is computationally and geometrically superior enough to matter in CAD.
+Therefore ordinary \(L^p\) norms are no longer required as the primary synchronized metric merely because they are easy to compute. They remain possible cheap bounds/pruning tools and comparison points with Lyche--Mørken.
 
-The most promising immediate observation is that for PL \(e\), \(G_De\) is piecewise cubic. Therefore exact/certified evaluation of \(N_G\) may reduce to low-degree polynomial extrema rather than curve-to-curve nearest-point search. This must be checked carefully before moving to more abstract metric theory.
+The main theoretical risk has moved decisively to **parameterization**. A synchronized error may still be much larger than the true geometric mismatch if one curve mainly slides points tangentially along essentially the same shape.
 
 ---
 
@@ -94,72 +112,80 @@ The most promising immediate observation is that for PL \(e\), \(G_De\) is piece
 
 Session 0002.
 
-### T2a. Fixed-endpoint Green kernel and exact synchronized-error identity — ESTABLISHED
+### T2a. Fixed-endpoint Green kernel / synchronized-error identity — ESTABLISHED
 
 Session 0003.
 
-### T2b. Sharp \(L^p\to L^\infty\) operator bounds — OPEN, DEPRIORITIZED
+### T2c. PL-specific exact/certified evaluation of \(N_G\) — ESTABLISHED
 
-Still useful as a baseline, but direct evaluation of \(N_G\) may make global \(L^p\) bounds secondary rather than central.
+Session 0004.
 
-### T2c. PL-specific exact/certified evaluation of \(N_G\) — NEXT TARGET
+### T2b. Sharp \(L^p\to L^\infty\) bounds — OPEN, SECONDARY
 
-Questions:
-- on each union-partition span, what polynomial degree is needed to maximize \(\|G_De(t)\|\)?
-- how are jumps in \(e\) handled at span boundaries?
-- scalar versus vector-valued cases;
-- can a certified maximum be obtained with standard polynomial root isolation / subdivision without dense sampling?
-- is the cost local/near-linear in the number of PL pieces, or does global endpoint coupling spoil this?
+Return only if useful for pruning, comparison with Lyche, or quantifying conservatism.
 
-### T3. First-order quotient by tangential reparametrization — POSTPONED
+### T3a. First-order removal of tangential error by reparameterization — NEXT TARGET
 
-### T4. Local comparison with normal/Hausdorff geometry — POSTPONED
+Given a nearby regular reference curve \(C\) and
+\[
+\widetilde C=C+E,
+\]
+decompose
+\[
+E=E_\parallel+E_\perp.
+\]
+Seek a small monotone parameter change
+\[
+\phi(t)=t+\eta(t)
+\]
+whose first-order effect cancels \(E_\parallel\).
 
----
+Questions for the next session only:
+- derive the correct formula for \(\eta\) and fix the mapping direction/sign carefully;
+- derive an explicit second-order remainder rather than writing only \(O(\|E\|^2)\);
+- identify the assumptions needed on \(\|C'\|\), curvature/\(C''\), and \(E'\);
+- determine a simple sufficient condition for monotonicity \(\phi'>0\);
+- test against a pure reparameterization of a straight line and a curved reference;
+- decide whether \(\|P_NE\|_\infty\) deserves promotion from heuristic to first-order quotient quantity.
 
-## Candidate objects parked for later
+Do **not** attempt a full Hausdorff theorem in the same session.
 
-### Normal-projected Green error
+### T3b. Normal-projected Green quantity — POSTPONED UNTIL T3a REVIEW
+
+Potential quantity
 \[
 N_{G,\perp}(e)=\sup_t\|P_{N(t)}G_De(t)\|.
 \]
-Do not work on this until synchronized evaluation is understood.
+Do not call it a norm before understanding its null directions and reference-curve dependence.
 
-### Nonlinear normal correspondence
-Seek monotone \(\sigma\) with
-\[
-\widetilde C(\sigma(t))-C(t)\perp T(t).
-\]
-Postponed.
-
-### Optimized affine gauge
-Potentially useful for standalone curves, but endpoint preservation is the current CAD default.
+### T4. Local normal/Hausdorff comparison — POSTPONED
 
 ---
 
-## Counterexamples to preserve for later
+## Counterexamples/tests to preserve
 
-1. straight-line bad parametrization;
-2. tiny-span spike;
-3. cancellation pair;
-4. near self-approach;
-5. high-curvature tube failure;
-6. double-knot jump.
+1. same straight line with nonlinear parameterization;
+2. short-span second-derivative spike;
+3. adjacent cancellation pair;
+4. near self-approach causing correspondence ambiguity;
+5. high curvature / tubular-neighborhood failure;
+6. double-knot jump;
+7. tangential perturbation large in synchronized error but small geometrically.
 
 ---
 
-## Goal-alignment review after Session 0003
+## Goal-alignment review after Session 0004
 
-No drift detected. The Green operator result is directly tied to the original simplification objective because it transports second-derivative approximation error into a certified positional/Hausdorff upper bound while staying in the PL-derived algebraic setting.
+No drift detected. The synchronized Green metric was introduced specifically to retain more structure than \(L^p\) while remaining cheaper than direct Hausdorff evaluation. Session 0004 confirms the evaluability side: it reduces to independent univariate fixed-degree problems.
 
-However, the next session must test **computational usefulness**, not continue accumulating abstract operator theory. If \(N_G\) cannot be evaluated/certified cheaply on PL errors, the current elegance may not translate into engineering value.
+The project should now stop polishing synchronized theory and confront the original geometric weakness: parameterization dependence.
 
 ---
 
 ## Stop conditions
 
-Pause this direction and report if:
-- exact/certified evaluation of the candidate metric becomes comparable in difficulty to Hausdorff/Fréchet search;
-- parameterization effects cannot be reduced without destroying the PL advantage;
-- bounds are too loose to rank simplifications usefully;
+Pause/report if:
+- removing parameterization sensitivity requires an optimization essentially equivalent to full Fréchet/Hausdorff search;
+- tangential quotient ideas fail even locally on simple regular curves;
+- geometry-aware correction destroys the low-degree/local structure inherited from \(C''\);
 - low weighted complexity of \(q\) does not translate into useful geometric simplification.
