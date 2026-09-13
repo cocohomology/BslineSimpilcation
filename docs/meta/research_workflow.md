@@ -100,6 +100,25 @@ If a result is correct but not useful, record that explicitly instead of promoti
 
 When a theoretically better metric/operator is introduced, ask what it costs to evaluate or optimize. A new metric that is essentially as expensive as Hausdorff/Fréchet computation may defeat the purpose of the project.
 
+### 4. Reality / anti-abstraction review
+
+This became explicit after Sessions 0007–0008. Fine analysis can become self-reinforcing: every difficulty suggests a sharper hypothesis, a finer coordinate chart, or a more elaborate theorem. The mathematics may become internally cleaner while the connection to the original CAD phenomenon becomes weaker.
+
+Before opening another layer of theory, ask:
+- what concrete failure mode in spline simplification is this mathematics meant to address?
+- would an ordinary CAD input plausibly activate this difficulty, or is it only an extreme existence counterexample?
+- if the theorem were proved perfectly, what engineering or modeling decision would actually change?
+- are we studying a boundary of the method, or mistakenly turning every boundary into a new subproject?
+- is the new machinery replacing a practical problem with a harder problem that is merely more elegant?
+
+A counterexample can have several different meanings and should be classified accordingly:
+- **fatal**: invalidates the central claim or makes the method unusable on ordinary inputs;
+- **boundary-defining**: shows where guarantees cease to be tight or universal but may be rare in practice;
+- **conditioning-only**: exact theory remains valid but finite-precision implementation needs safeguards;
+- **modeling-choice**: exposes a difference between the mathematical metric and the actual CAD semantics.
+
+Do not automatically pivot after a mathematically sharp counterexample. First decide which class it belongs to and whether the expected engineering frequency or impact justifies changing the main route.
+
 ---
 
 ## Documentation split
@@ -200,6 +219,17 @@ Control:
 - major pivots, failures, code-test thresholds, and literature blocks should be reported to the user promptly;
 - the user will eventually rejoin and review stage-level results.
 
+### Risk F — the inference-game trap
+
+The assistant is unusually good at continuing a mathematical argument once a formal structure exists. That creates a specific failure mode: the research can drift from “solve the spline simplification problem” to “complete the theory suggested by the previous theorem.” The latter can be coherent indefinitely.
+
+Control:
+- after every one or two fine-analysis sessions, explicitly restate the original engineering phenomenon in plain language;
+- require a concrete reason before introducing a new level of abstraction;
+- distinguish practical common cases from adversarial existence cases;
+- allow a theorem to remain a known boundary instead of automatically repairing it;
+- periodically ask what would be implemented, measured, or decided differently if the next theorem succeeded.
+
 ---
 
 ## Pilot success criteria
@@ -234,3 +264,15 @@ What should improve:
 - we should periodically check whether the user-facing summary is still enough for a human researcher to re-enter without reading internal material.
 
 It is too early to conclude that the model scales to a large research program. This repository should remain a pilot until the first genuinely nontrivial stage result survives both assistant review and later user review.
+
+---
+
+## Reflection after Sessions 0007–0008
+
+The first adversarial counterexample and the subsequent return to Degen revealed a useful workflow lesson.
+
+Session 0007 found an arbitrarily loose global-curvature bound. Mathematically this was a strong negative example, but it did **not** invalidate the central D2/Green reduction, nor did it establish that the failure mode is common in ordinary CAD data. The correct response is therefore not “repair everything immediately,” but “record the boundary, estimate its practical importance, and only deepen the theory if that boundary matters to the intended use.”
+
+Session 0008 was useful because Degen supplied a conceptual explanation for the first-order theory, but it also increased the danger of abstraction drift: normal bundles, admissibility, implicit branches, reach, and tubular neighbourhoods can easily become a self-contained differential-geometric research project.
+
+For the next stage, the normal-correspondence route should be treated as a **candidate bridge**, not as the new problem statement. Its value will be judged by whether it gives a simple enough admissibility test for the close-curve regime relevant to simplification. If obtaining that test begins to resemble a global nearest-point theory, the project should stop deepening the branch and reconsider a simpler engineering architecture.
