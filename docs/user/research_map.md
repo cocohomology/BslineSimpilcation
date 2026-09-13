@@ -4,116 +4,113 @@ This is a high-level map, not a fixed plan. Sections may be reordered, merged, e
 
 ## A. Core reduction — FOUNDATION ESTABLISHED
 
-Study
+For \(C^1\) cubic splines,
 \[
 C\mapsto C''
 \]
-for \(C^1\) cubic splines.
-
-Established:
+turns the curve into a possibly discontinuous piecewise-linear vector function. After quotienting the affine kernel,
 \[
 S^1_3/\mathcal P_1\cong PL_{\rm disc}.
 \]
-Every admissible piecewise-affine second derivative integrates back to a \(C^1\) cubic after fixing two vector integration constants.
 
-The singularity type of \(C''\) records minimal cubic knot multiplicity:
+The singularity type of \(C''\) records minimal cubic knot multiplicity exactly:
 - continuous kink -> simple knot;
 - jump -> double knot;
-- no kink/jump -> redundant breakpoint.
+- neither -> redundant breakpoint.
 
-With \(K\) kinks and \(J\) jumps,
+This makes the second-derivative domain an exact representation-complexity model rather than a visual analogy.
+
+## B. Synchronized error transport — BASELINE ESTABLISHED
+
+Under endpoint preservation,
 \[
-\kappa=K+2J,
-\qquad
-N_{\rm ctrl}=4+\kappa.
+E=C-\widetilde C=G_De,
+\qquad e=C''-\widetilde C''.
+\]
+The Green-induced quantity
+\[
+N_G=\|E\|_\infty
+\]
+is exact synchronized positional error and a Hausdorff upper bound.
+
+For PL \(e\), \(E\) is piecewise cubic and \(N_G\) is directly certifiable by fixed-degree univariate root isolation or Bézier subdivision. Therefore \(L^p\) surrogates are no longer central merely for computational convenience.
+
+A compact Green-function refresher is stored in `docs/user/background/green_functions.md`.
+
+## C. Geometry-aware correction — FIRST LOCAL THEOREM ESTABLISHED
+
+The dominant weakness of synchronized error is tangential parameter sliding.
+
+Session 0005 moves to the reference arc-length coordinate. If \(T\) is the unit tangent and
+\[
+K=\operatorname*{ess\,sup}\kappa
+\]
+is the curvature bound, then the signed tangential candidate displacement defines an arc-length matching. Under the explicit smallness condition
+\[
+\|D_sE\|_\infty+K\|E\|_\infty<1,
+\]
+the matching is monotone and yields
+\[
+ d_H
+\le
+N_{G,\perp}(e)+\frac K2N_{G,\parallel}(e)^2
+\le
+N_{G,\perp}(e)+\frac K2N_G(e)^2.
 \]
 
-The remaining affine freedom is handled for now by preserving both curve endpoints.
+Thus:
+- the normal component is the first-order geometric residual;
+- tangential error is removed to first order;
+- the remaining tangential contribution is quadratic in size and weighted by geometric curvature.
 
-## B. Error transport through integration — SYNCHRONIZED BASELINE ESTABLISHED
+The use of arc length is important: it avoids contaminating the remainder with tangential acceleration caused by poor parameter speed.
 
-Let
-\[
-e=C''-\widetilde C''.
-\]
-Under fixed endpoints,
-\[
-E=C-\widetilde C=G_De
-\]
-with an explicit Dirichlet Green kernel. Therefore
-\[
-N_G(e)=\|G_De\|_\infty
-\]
-is exactly synchronized positional error and a rigorous Hausdorff upper bound.
+This is still only a local theorem. It is not exactly reparameterization-invariant for curved pure reparameterizations.
 
-For PL \(e\), this exact quantity is also directly certifiable:
-- \(E\) is piecewise cubic;
-- vector extrema reduce to roots of degree-at-most-five equations \(E\cdot E'=0\);
-- alternatively, cubic Bézier convex-hull bounds plus subdivision give a robust certified tolerance test.
+## D. Current frontier — CAN THE GEOMETRIC BOUND STAY CHEAP?
 
-So the synchronized metric is both exact and algebraically simple. Global \(L^p\) bounds are now secondary rather than central.
+The next question is computational/algebraic rather than conceptual:
 
-A minimal Green-function refresher is stored in `docs/user/background/green_functions.md` for later reading and for inclusion in any future self-contained TeX note.
+> For cubic splines, are the terms in the new geometry-aware bound still certifiable by fixed-degree local univariate algebra?
 
-## C. Geometry-aware error — CURRENT FRONTIER
+The next session will study:
+- \(N_{G,\perp}\);
+- \(\|D_sE\|\);
+- curvature maximum \(K\);
+- the monotonicity condition.
 
-The dominant weakness is now parameterization.
+If these remain low-degree and local, the D2/Green route will retain the main advantage that motivated it: more geometric information without a full curve-to-curve nearest-point search.
 
-Two curves can be geometrically very close while corresponding parameter points differ largely in the tangential direction. The next question is intentionally local:
+## E. Counterexample program
 
-> Can a small monotone reparameterization remove tangential synchronized error to first order, so that the normal component is the first-order geometric residual?
-
-Only after that local statement is proved and attacked by counterexamples should the project decide whether to pursue:
-- normal-projected Green error;
-- normal graph/tubular-neighborhood theory;
-- Degen-style normal correspondence;
-- order-preserving reparameterization / Fréchet-type ideas;
-- some different construction suggested by failures.
-
-No route is privileged in advance.
-
-## D. Counterexample program
-
-Every geometry-aware candidate should eventually face:
-- identical or nearly identical geometry with nonlinear reparameterization;
-- very short knot spans with large second derivative;
-- cancellation between neighboring derivative errors;
-- nearly straight segments;
-- high-curvature but small positional deviations;
-- local backtracking/correspondence ambiguity;
-- near self-approach;
+The main geometry-aware candidates must face:
+- identical straight geometry with nonlinear parameterization;
+- identical curved geometry with nonlinear parameterization;
+- high curvature;
+- near-zero speed while remaining formally regular;
+- short knot spans and derivative spikes;
+- near self-approach / correspondence ambiguity;
 - double-knot jumps;
-- large tangential synchronized error with small true geometric error.
+- cancellation patterns in second-derivative error.
 
-## E. Low-complexity approximation of \(C''\)
+## F. Low-complexity approximation algorithm — POSTPONED
 
-Only after the geometry-aware error question is sufficiently understood:
-- formulate the PL approximation problem using weighted complexity \(\kappa=K+2J\);
+Only after the geometry-aware certification route survives:
+- formulate weighted PL simplification using kink/jump complexity;
 - compare deletion, merge, breakpoint movement, and free-breakpoint fitting;
-- exploit exact/certified synchronized Green evaluation where useful;
-- write pseudocode before any implementation.
-
-No source-code implementation is planned at this stage.
-
-## F. Certification against geometry
-
-The final CAD criterion remains geometric tolerance.
-
-A possible end-state is:
-
-1. optimize a tractable metric in the \(C''\) domain;
-2. reconstruct the cubic candidate;
-3. certify geometric error with a rigorous local/global mechanism;
-4. refine only where certification fails.
-
-This is not a commitment. If the parameterization research suggests a cleaner architecture, replace it.
+- use pseudocode before implementation;
+- use numerical work to attack assumptions and measure conservatism.
 
 ## G. Stage-level note criterion
 
-Write a full TeX note only when at least one of the following occurs:
-- a useful theorem chain survives review and has meaningful geometric consequence;
-- a geometry-aware metric/framework becomes coherent enough to justify an algorithmic route;
-- a major negative theorem closes a broad family of ideas;
-- theory plus pseudocode forms a self-contained method worth independent reading.
+The first full TeX note is now close but intentionally deferred.
 
-When such a note is written, it should include a short introduction to Green functions/kernels rather than assuming that background.
+Write it if the Session 0005 geometry-aware theorem survives the next computability/adversarial review. Such a note should include:
+- the D2 representation theorem;
+- a self-contained Green-function/kernel introduction;
+- exact synchronized Green error and its certification;
+- arc-length tangential quotient theorem;
+- limitations/counterexamples;
+- the resulting pseudocode architecture if justified.
+
+No novelty claim should be made without a focused literature check.

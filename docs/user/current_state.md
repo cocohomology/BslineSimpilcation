@@ -2,171 +2,189 @@
 
 ## Scope
 
-The current research branch remains restricted to **\(C^1\), cubic, non-rational spline curves**. The basic transformation is
+The current research branch remains restricted to regular, \(C^1\), cubic, non-rational spline curves. The basic transformation is
 \[
 C\xrightarrow{D^2}q=C'',
 \]
 where \(q\) is piecewise linear and may jump at double knots.
 
-The long-term goal is to simplify \(q\) while preserving a useful geometric tolerance, ideally using an error quantity that is substantially tighter than ordinary \(L^p\) surrogates but much easier to handle than direct Hausdorff distance.
+The long-term goal is to simplify \(q\) under a geometric tolerance using a metric/certification mechanism substantially tighter than ordinary \(L^p\) surrogates but much easier to handle than direct Hausdorff optimization.
+
+Canonical error notation is
+\[
+E:=C-\widetilde C,
+\qquad e:=C''-\widetilde C'',
+\qquad E=G_De
+\]
+under the endpoint-preserving reconstruction gauge.
 
 ---
 
 ## Stable result 1 — representation complexity is exact in the \(C''\) domain
 
-Let \(S^1_3\) be the \(C^1\) piecewise-cubic space and \(PL_{\rm disc}\) the piecewise-affine space with possible jumps. Then
-\[
-D^2:S^1_3\to PL_{\rm disc}
-\]
-is onto with
-\[
-\ker D^2=\mathcal P_1.
-\]
-Thus
+The second-derivative map from \(C^1\) piecewise cubics to possibly discontinuous piecewise-affine functions is onto with affine kernel:
 \[
 S^1_3/\mathcal P_1\cong PL_{\rm disc}.
 \]
 
 For \(q=C''\):
-- a jump corresponds to a double cubic knot;
-- a continuous kink corresponds to a simple knot;
-- no jump/kink means the breakpoint is redundant.
+- jump -> double cubic knot;
+- continuous kink -> simple knot;
+- neither -> redundant breakpoint.
 
-If \(K\) is the number of continuous kinks and \(J\) the number of jumps,
+If \(K_0\) counts continuous kinks and \(J\) jumps,
 \[
-\kappa(q)=K+2J,
+\kappa(q)=K_0+2J,
 \qquad
 N_{\rm ctrl}=4+\kappa(q)
 \]
 for a minimal open/clamped cubic representation.
 
-So fixed-degree spline complexity is not merely correlated with the PL second derivative; it is encoded exactly by its singularity structure.
+Thus the fixed-degree representation complexity is encoded exactly in the PL second derivative.
 
 ---
 
-## Stable result 2 — fixed-endpoint positional error has an exact Green representation
+## Stable result 2 — synchronized positional error is exact in the same domain
 
-Use the endpoint-preserving gauge. Let
+With shared endpoints,
 \[
-E=C-\widetilde C,
-\qquad e=C''-\widetilde C'',
+E''=e,
 \qquad E(a)=E(b)=0.
 \]
 Then
 \[
-E(t)=G_De(t)=\int_a^bK_D(t,s)e(s)\,ds,
+E=G_De
 \]
-with
+with the explicit Dirichlet Green kernel derived in Session 0003. Therefore
 \[
-K_D(t,s)=
--\frac{(\min\{t,s\}-a)(b-\max\{t,s\})}{b-a}.
+N_G(e):=\|E\|_\infty
 \]
+is exactly the synchronized positional error and satisfies
+\[
+d_H(\operatorname{Im}C,\operatorname{Im}\widetilde C)\le N_G(e).
+\]
+
+A short Green-function refresher is stored in `docs/user/background/green_functions.md` and should be included in any later self-contained TeX note.
+
+---
+
+## Stable result 3 — the synchronized Green error is directly certifiable
+
+When \(e\) is piecewise linear, \(E\) is piecewise cubic. On each union-partition span the Euclidean norm extrema satisfy
+\[
+E\cdot E'=0,
+\]
+a polynomial equation of degree at most five.
+
+Hence \(N_G\) can be evaluated/certified using fixed-degree real-root isolation span by span. A second CAD-friendly route uses cubic Bézier control-vector bounds plus de Casteljau subdivision.
+
+This removes the need to use an \(L^p\) surrogate merely because it is easier to compute.
+
+---
+
+## New stable result 4 — tangential synchronized error can be removed to first order
+
+This is the first geometry-aware theorem in the project.
+
+Let \(s\) be the arc-length coordinate of the regular reference curve \(C\), with unit tangent \(T\) and curvature
+\[
+\kappa(s)=\left\|\frac{dT}{ds}\right\|,
+\qquad
+K=\operatorname*{ess\,sup}\kappa.
+\]
+
+The candidate displacement is
+\[
+\Delta:=\widetilde C-C=-E.
+\]
+Its signed tangential displacement in arc length is
+\[
+\delta(s)=\Delta(s)\cdot T(s)=-E(s)\cdot T(s).
+\]
+Use the reference matching
+\[
+\rho(s)=s+\delta(s).
+\]
+
+If the curves share endpoints and
+\[
+\boxed{
+\|D_sE\|_\infty+K\|E\|_\infty<1,
+}
+\]
+then \(\rho\) is an orientation-preserving homeomorphism of the entire arc-length interval.
 
 Define
 \[
-N_G(e)=\|G_De\|_\infty.
+N_{G,\perp}(e)=\sup_t\|P_{N(t)}E(t)\|,
+\]
+\[
+N_{G,\parallel}(e)=\sup_t|E(t)\cdot T(t)|.
 \]
 Then
 \[
 \boxed{
-N_G(e)=\|C-\widetilde C\|_{\infty,\text{synchronized parameter}}
+ d_H(\operatorname{Im}C,\operatorname{Im}\widetilde C)
+\le d_F^+(C,\widetilde C)
+\le
+N_{G,\perp}(e)+\frac K2N_{G,\parallel}(e)^2.
 }
 \]
-and therefore
+Consequently,
 \[
 \boxed{
-d_H(\operatorname{Im}C,\operatorname{Im}\widetilde C)\le N_G(e).
+ d_H\le N_{G,\perp}(e)+\frac K2N_G(e)^2.
 }
 \]
 
-The Green operator retains where the second-derivative error occurs and allows sign/vector cancellation before taking the final norm. A single global \(L^p\) number discards that information earlier.
+### Meaning
 
-A short refresher on Green functions/kernels is stored in `docs/user/background/green_functions.md` so a later self-contained TeX note need not assume this theory is fresh in memory.
+The synchronized normal error is the first-order geometric residual. Tangential synchronized error is, locally, a reparameterization direction and survives only through a quadratic curvature correction.
+
+This is stronger than the original heuristic idea of simply projecting onto the normal space: it provides a certified finite Hausdorff upper bound under an explicit monotonicity condition.
+
+### Why the arc-length formulation matters
+
+A direct correction in the original spline parameter produces a remainder involving \(\|C''\|\), which is polluted by parameter-speed variation. A badly parameterized straight line may have large \(C''\) despite zero geometric curvature.
+
+In arc length, the remainder depends on geometric curvature instead. For a straight line, \(K=0\), and a monotone endpoint-preserving purely tangential redistribution is recognized exactly as zero geometric error.
 
 ---
 
-## Stable result 3 — the exact Green error is directly certifiable on PL data
+## Important limitation
 
-This resolves the main concern from the previous session: perhaps \(N_G\) was exact but too expensive to evaluate.
+The new theorem is only first-order invariant to reparameterization on curved geometry.
 
-Let
-\[
-a=x_0<x_1<\cdots<x_n=b
-\]
-be the union partition of the breakpoints of \(C''\) and \(\widetilde C''\). On each span write
-\[
-e(t)=\alpha_i+\beta_i(t-x_i).
-\]
-The endpoint condition requires only one global vector correction:
-\[
-E'(a)=-\frac{1}{b-a}\int_a^b(b-s)e(s)\,ds.
-\]
-After that, \(E\) propagates span by span and is cubic on every span:
-\[
-E(t)=P_i+V_i h+\frac12\alpha_i h^2+\frac16\beta_i h^3,
-\qquad h=t-x_i.
-\]
+If the candidate is exactly the same curved image with a nonlinear parameterization, the true Hausdorff distance is zero, while the present bound is generally only quadratic in the parameter shift. Exact invariance would require a stronger nonlinear correspondence.
 
-For Euclidean vector error,
-\[
-F(t)=\|E(t)\|^2
-\]
-is degree at most six and its stationary points satisfy
-\[
-E(t)\cdot E'(t)=0,
-\]
-a polynomial equation of degree at most five (generically exactly five).
-
-Hence the exact maximum needs only:
-- union-partition boundaries;
-- the real roots of one fixed-degree quintic per span.
-
-This gives a finite certified procedure without dense sampling. Structurally the work is linear in the number of union spans, apart from the fixed-degree root-isolation cost and precision issues near multiple roots.
-
-There is also a CAGD-style alternative: express each cubic error segment in Bézier form, bound the entire segment by the maximum norm of its four control vectors, and use de Casteljau subdivision to tighten the bound. This gives a robust certified tolerance test with root isolation as a boundary-case fallback.
-
-### Why this matters
-
-The synchronized Green error is therefore not merely mathematically exact; it is also much simpler structurally than direct curve-to-curve Hausdorff evaluation. It reduces to one-parameter local polynomial extrema, whereas directed Hausdorff has the nested form
-\[
-\max_t\min_u\|C(t)-\widetilde C(u)\|
-\]
-and must handle changing nearest-point correspondences.
-
-This is not a universal runtime theorem against all Hausdorff algorithms, but the algebraic simplification is real.
+Other limitations:
+- the reference curve must remain regular;
+- high curvature enlarges the quadratic term;
+- the monotonicity condition contains \(D_sE\);
+- \(N_{G,\perp}\) is reference dependent and no longer a norm on \(e\) alone.
 
 ---
 
 ## Current assessment
 
-The synchronized part of the framework is now strong:
+The framework now has three linked exact/certified layers:
 
-1. candidate complexity is exact in the \(C''\) domain;
-2. synchronized positional error is exact in the same domain;
-3. that error can be evaluated/certified by low-degree univariate calculations.
+1. representation complexity in the \(C''\) domain;
+2. exact synchronized positional error through the Green operator;
+3. a local geometry-aware Hausdorff bound that suppresses tangential error to first order.
 
-This changes the role of ordinary \(L^p\) norms. They may still be useful for cheap pruning or comparison with Lyche--Mørken, but there is currently no reason to use them as the primary error metric merely because they are easy to compute.
-
-The main unresolved weakness has moved to **parameterization**. A synchronized metric can overestimate geometric mismatch when two nearby curves mainly differ by tangential sliding of parameter points.
+This is the strongest point reached so far, but the project has not yet promoted it to a full TeX stage note. One more question is critical: does the geometry-aware bound retain the fixed-degree computational advantage of the synchronized Green metric?
 
 ---
 
 ## Next research target
 
-The next session will attack only the first local parameterization question:
+The next session will study only the algebraic/certification cost of:
+- \(N_{G,\perp}\);
+- \(\|D_sE\|\);
+- the reference curvature bound \(K\);
+- the monotonicity condition.
 
-> For a nearby regular curve \(\widetilde C=C+E\), can a small monotone reparameterization absorb the tangential component of \(E\) to first order, leaving the normal component as the first-order geometric residual?
+If these remain fixed-degree univariate problems on cubic spans, the framework will be ready for a stage-level adversarial review and likely a self-contained TeX note.
 
-The goal is an explicit correction and explicit remainder estimate, not yet a full Hausdorff or Fréchet theorem.
-
----
-
-## What is deliberately not claimed
-
-- \(N_G\) is not parameterization-invariant.
-- No claim yet that normal projection gives a certified geometric metric.
-- No breakpoint optimization algorithm has been designed.
-- The structural \(O(n)\) statement for \(N_G\) evaluation is not a uniform finite-precision bit-complexity theorem.
-- No source-code test is currently needed.
-
-No TeX stage note has been created yet. The synchronized theory is now coherent, but the genuinely geometry-aware step has not yet survived review.
+No source-code test is currently needed.
