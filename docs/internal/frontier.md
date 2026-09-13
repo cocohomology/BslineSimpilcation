@@ -2,146 +2,134 @@
 
 ## Current narrow problem
 
-Work only with regular \(C^1\), cubic, non-rational spline curves \(C:[a,b]\to\mathbb R^d\), initially with fixed parameter interval and fixed endpoint positions.
+Work with regular \(C^1\), cubic, non-rational spline curves \(C:[a,b]\to\mathbb R^d\). The algebraic reduction no longer needs regularity, but regularity will matter once geometry enters.
 
 Let
 \[
 q=C'',\qquad \widetilde q=\widetilde C'',\qquad e=q-\widetilde q.
 \]
 
-Because \(q\) is piecewise linear, the simplification problem is potentially reduced to low-complexity approximation of a PL vector function.
+## Newly established foundation — Session 0002
 
-The immediate theoretical target is **not** the approximation algorithm. It is the error geometry.
+The map
+\[
+D^2:S^1_3\to PL_{\rm disc}
+\]
+is surjective with affine kernel \(\mathcal P_1\). After fixing two vector integration constants, every discontinuous PL candidate reconstructs uniquely to a \(C^1\) cubic.
+
+The minimal cubic knot multiplicity is encoded exactly by the PL singularity type:
+
+- jump in \(q\) -> double cubic knot;
+- continuous kink in \(q\) -> simple cubic knot;
+- no jump and no kink -> redundant breakpoint.
+
+If \(K\) is the number of continuous kinks and \(J\) the number of jumps,
+\[
+\kappa(q)=K+2J,
+\]
+and a minimal open/clamped cubic representation has
+\[
+N_{\rm ctrl}=4+\kappa(q).
+\]
+
+This validates the D2 route as an exact representation-complexity reduction, not merely a heuristic.
+
+Detailed proof: `docs/internal/derivations/d2_reconstruction.md`.
+
+## Immediate modeling issue: the affine gauge
+
+Because \(D^2\) kills affine functions, a metric on \(q\) cannot control position until the affine kernel is fixed or optimized.
+
+Candidate gauges:
+
+1. fixed \(C(a),C'(a)\);
+2. fixed endpoints \(C(a),C(b)\) — preferred default for CAD/B-Rep;
+3. optimized affine correction — potentially tighter, but postponed.
+
+The next session should use gauge 2 only.
 
 ## Candidate objects under study
 
 ### 1. Green-induced synchronized error
 
-For chosen boundary conditions, define
+Under fixed endpoints define
 \[
 E=Ge,
 \]
-where \(G\) is the inverse of the second derivative operator subject to those boundary conditions.
+where \(G\) is the inverse of \(D^2\) with homogeneous endpoint conditions on the error.
 
 Primary quantity:
 \[
 N_G(e)=\|Ge\|_\infty.
 \]
 
-Questions:
-- exact Green kernel for different reconstruction constraints;
-- sharp constants relating \(N_G\) to \(L^p\) norms of \(e\);
-- whether these constants are materially tighter than coefficient/discrete norm bounds used in classical spline reduction;
-- efficient exact or certified evaluation when \(e\) is PL.
+Immediate questions:
+- exact Dirichlet Green kernel;
+- exact / sharp \(L^p\to L^\infty\) constants, but only after the kernel itself is reviewed;
+- efficient exact or certified evaluation when \(e\) is PL;
+- whether endpoint fixing is too restrictive for some simplification use cases.
 
 ### 2. Normal-projected Green error
 
-For a regular reference curve \(C\) with unit tangent \(T\), define heuristically
+For a regular reference curve \(C\) with unit tangent \(T\), later study
 \[
 N_{G,\perp}(e)=\sup_t\|P_{N(t)}Ge(t)\|.
 \]
 
-Interpretation: suppress the first-order tangential component, which may primarily represent reparametrization.
-
-Status: candidate **semi-norm-like** quantity only. Do not call it a norm until null-space and dependence on the reference curve are understood.
-
-Questions:
-- exact null directions;
-- behavior under pure reparametrization;
-- local relation to normal-graph distance / Degen normal distance;
-- whether Hausdorff admits a bound of the form
-  \[
-  d_H\le N_{G,\perp}+R,
-  \]
-  with a controlled higher-order remainder;
-- conditions needed for unique normal correspondence.
+Status: candidate semi-norm-like quantity only. **Do not work on this yet.**
 
 ### 3. Nonlinear normal correspondence
 
-Seek a monotone map \(\sigma\) such that
+Later seek a monotone map \(\sigma\) such that
 \[
 \widetilde C(\sigma(t))-C(t)\perp T(t).
 \]
 
-Potential quantity:
-\[
-D_N(C,\widetilde C)=\sup_t\|\widetilde C(\sigma(t))-C(t)\|.
-\]
+Status: postponed until the synchronized Green baseline is understood.
 
-This is closer to geometry and Degen's construction, but more nonlinear.
+## Theorem status
 
-Questions:
-- existence/uniqueness conditions in space curves;
-- whether the required assumptions can be expressed through reach/tubular-neighborhood bounds;
-- whether a local linearization recovers \(N_{G,\perp}\).
+### T1. Exact reconstruction theorem — ESTABLISHED
 
-## High-priority possible theorems
+Completed in Session 0002, including the weighted breakpoint / knot-complexity dictionary.
 
-### T1. Exact reconstruction theorem
+### T2. Green operator formulas and operator constants — OPEN
 
-Characterize the correspondence between:
-- \(C^1\) cubic splines with prescribed boundary data, and
-- piecewise-linear second derivatives with allowed jump structure.
+Next target should be split into small pieces:
 
-This should be elementary but must be written cleanly because it is the foundation.
+- T2a: fixed-endpoint kernel and exact identity \(E=Ge\);
+- T2b: sharp operator bounds and extremizers;
+- T2c: PL-specific exact/certified evaluation.
 
-### T2. Green operator formulas and sharp \(L^p\to L^\infty\) constants
+Do not attempt all three in one session.
 
-Do this for at least:
-- fixed \(E(a)=E'(a)=0\);
-- fixed \(E(a)=E(b)=0\).
+### T3. First-order quotient by tangential reparametrization — POSTPONED
 
-This is not necessarily novel, but provides exact baseline bounds and reveals the amount of slack in classical norms.
+### T4. Local comparison with geometric distance — POSTPONED
 
-### T3. First-order quotient by tangential reparametrization
+## Counterexamples to actively preserve for later
 
-For a small perturbation \(\widetilde C=C+E\), determine precisely when the tangential part of \(E\) can be absorbed by a small reparametrization and identify the first-order geometric residual.
+1. straight-line bad parametrization;
+2. tiny-span spike;
+3. cancellation pair;
+4. near self-approach;
+5. high curvature tube failure;
+6. double-knot jump.
 
-Expected form:
-\[
-E=\alpha T+E_\perp
-\]
-with a reparametrization correction cancelling \(\alpha T\) to first order.
+## New question exposed by T1
 
-Need explicit assumptions and remainder.
+Could optimizing the affine reconstruction mode after simplifying \(q\) materially reduce geometric error compared with hard endpoint constraints? This may be relevant for standalone curves but probably conflicts with B-Rep endpoint preservation. Keep as a side branch; do not pursue now.
 
-### T4. Local comparison with geometric distance
+## Goal-alignment review
 
-Under tubular-neighborhood and regularity assumptions, derive a certified or asymptotic relation between normal residual and Hausdorff/normal distance.
+T1 is directly relevant to the original CAD goal because it proves that weighted PL singularity complexity is exactly the minimal cubic knot/control-point complexity. The work has not drifted into an unrelated functional-analysis problem.
 
-This is the first point where a genuine new framework may emerge.
-
-## Counterexamples to actively construct
-
-1. **Straight-line bad parametrization**: same geometric line, nontrivial \(C''\).
-2. **Tiny-span spike**: huge \(e\) on interval length \(h\ll1\), small integrated displacement.
-3. **Cancellation pair**: adjacent opposite-sign PL errors with small \(Ge\).
-4. **Near self-approach**: normal correspondence non-unique though Hausdorff is small.
-5. **High curvature tube failure**: perturbation crosses the reach threshold.
-6. **Double-knot jump**: determine how a jump in \(C''\) contributes after two integrations and whether common norms mis-rank it.
-
-## Literature hooks
-
-Already available in project materials:
-- Lyche--Mørken discrete norms and knot removal;
-- Degen normal distance / admissible curves;
-- DeVore nonlinear approximation;
-- Jupp free-knot splines;
-- Schumaker spline fundamentals.
-
-Likely future literature categories if needed:
-- Green operators / negative Sobolev norms;
-- Fréchet distance and curve correspondence;
-- tubular neighborhoods, reach, normal graphs;
-- elastic metrics / shape spaces (only if directly relevant; avoid scope explosion);
-- approximation of PL/vector functions with free breakpoints.
+The unresolved risk remains entirely in the **error geometry**, not the representation reduction.
 
 ## Stop conditions
 
-Pause this direction and report to the user if any of the following becomes convincing:
-- every geometry-aware metric considered becomes as hard as Hausdorff/Fréchet optimization;
-- parameterization effects cannot be suppressed without destroying the linear/PL advantage;
-- certified constants are so loose that the method loses engineering value;
-- simplification of \(C''\) systematically fails to correlate with spline representation complexity.
-
-Likewise report immediately if a theorem materially stronger than the current baseline is established.
+Pause this direction and report if:
+- the geometry-aware metric becomes essentially as hard as Hausdorff/Fréchet optimization;
+- parameterization effects cannot be suppressed without destroying the PL advantage;
+- certified constants are too loose for engineering value;
+- low weighted complexity of \(q\) does not translate into useful geometric simplification.
