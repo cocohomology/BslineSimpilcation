@@ -8,7 +8,7 @@ q=C'',\qquad \widetilde q=\widetilde C'',\qquad e=q-\widetilde q,
 \qquad E=C-\widetilde C=G_De.
 \]
 
-## Stable foundation that survived the first attack
+## Stable foundation
 
 ### F1 — exact \(D^2\) reduction
 \[
@@ -19,117 +19,121 @@ is onto with affine kernel. Jump/kink structure of \(q\) records minimal cubic k
 ### F2 — exact synchronized Green error
 Under fixed endpoints,
 \[
-E=G_De,
-\qquad N_G=\|E\|_\infty,
+E=G_De,\qquad N_G=\|E\|_\infty,
 \]
-and
+and \(d_H\le N_G\). For PL \(e\), \(N_G\) is fixed-degree certifiable.
+
+### F3 — normal displacement is the first-order geometric residual
+The Session-0005 arc-length shift removes tangential synchronized error to first order. Session 0008 now identifies this shift as the first Newton/IFT linearization of the nonlinear normal-projection equation.
+
+### F4 — first geometry-aware global-curvature product rejected
+The expression
 \[
-d_H\le N_G.
+N_{G,\perp}+\frac K2N_{G,\parallel}^2
 \]
+is correct but can be arbitrarily conservative because curvature may be large far from the support of tangential error. The failure is globalization of geometry, not the local tangent/normal decomposition.
 
-### F3 — synchronized error is fixed-degree certifiable
-For PL \(e\), \(E\) is piecewise cubic. \(N_G\) reduces to degree-at-most-five stationarity equations or certified cubic Bézier subdivision.
+## New structural lesson from Degen — admissibility before the norm
 
-### F4 — normal displacement is the correct first-order geometric residual
-Using reference arc length, the first-order shift
-\[
-\rho(s)=s-E\cdot T
-\]
-removes tangential synchronized error to first order. The local Taylor structure is sound:
-\[
-\gamma(s+\delta)=\gamma(s)+T\delta+\frac12\kappa_{\rm vec}\delta^2+o(\delta^2).
-\]
-Thus curvature-dependent quadratic tangential error is geometrically real.
-
-### F5 — all first-order geometry-aware ingredients are fixed-degree algebraic on cubic spans
-Normal/tangential projections, curvature, regularity, and the monotonicity of \(\rho\) remain fixed-degree univariate certification problems. In particular,
-\[
-\rho'(s)>0\iff H(t)>0,
-\qquad
-H=2S^2-2B'S+BS',
-\]
-with degree at most eight.
-
-## Negative result N1 — the global curvature bound is not acceptable as a final metric
-
-The previously proposed certification
-\[
- d_H\le N_{G,\perp}+\frac K2N_{G,\parallel}^2,
-\qquad K=\sup\kappa,
-\]
-is mathematically correct but can be arbitrarily conservative **inside the present cubic \(C^1\) model class**.
-
-Explicit construction:
-- the error is a purely tangential monotone reparameterization supported on a straight region;
-- a disjoint region of the same curve has arbitrarily high curvature;
-- candidate and reference images are exactly identical, so \(d_H=0\);
-- nevertheless the global product equals \((K/2)A^2\) and can diverge as \(K\to\infty\).
-
-Detailed counterexample: `docs/internal/derivations/adversarial_review_round1.md`.
-
-Interpretation: the failure is the **globalization of curvature**, not the first-order tangent/normal decomposition.
-
-## Negative/limitation N2 — order-preserving correspondence can be much stronger than Hausdorff
-
-The current construction controls an explicit Fréchet-like correspondence and then uses
-\[
-d_H\le d_F^+.
-\]
-Near self-intersection or strong self-approach, this can be much more conservative than point-set Hausdorff distance.
-
-This is not a logical error; it is a modeling issue. If CAD simplification should preserve traversal/order, this may be desirable. If only the image matters, a tubular/reach assumption or a more flexible correspondence is needed.
-
-## Attack results that did not break the theory
-
-### Low speed
-
-A straight-line family with \(\min\|C'\|\to0\) is still treated exactly in exact arithmetic. The problem is numerical conditioning only; the monotonicity polynomial becomes small like a power of the speed.
-
-### High curvature at the same location
-
-The \(\kappa\delta^2/2\) scaling is asymptotically sharp. Curvature cannot simply be removed; it must be localized or handled by a nonlinear correspondence.
-
-### Short spans / double knots
-
-No structural failure. Use span normalization and one-sided curvature; numerical conditioning remains a future engineering issue.
-
-## Current interpretation
-
-The first attack changes the status of the project:
-
-- the core \(D^2\)/Green program remains alive;
-- the synchronized theory remains strong;
-- the normal component remains the right first-order geometric object;
-- but the simple global bound using one \(K=\sup\kappa\) is rejected as a practical final metric.
-
-No stage-level TeX note should be written yet.
-
-## Current main target — nonlinear local normal correspondence
-
-The preferred next route is to seek a local branch \(u=\sigma(t)\) satisfying
+Degen's useful lesson for this project is methodological. His construction proceeds in the order
 \[
 \boxed{
-(\widetilde C(t)-C(u))\cdot C'(u)=0.
+\text{normal neighbourhood}
+\to\text{admissible class}
+\to\text{unique correspondence}
+\to\text{deviation field}
+\to\text{sup norm}
+\to\text{Hausdorff relation}.
 }
 \]
-For fixed \(t\) and cubic \(C\), this is degree at most five in \(u\).
 
-Desired properties:
-- restore locality automatically;
-- exact zero on same-image reparameterizations along the same branch;
-- retain a stronger-than-Hausdorff but cheaper-than-global-nearest-point structure;
-- connect naturally to Degen's normal-distance framework.
+This suggests that our next metric should not be guessed directly as another norm of \(E\). We should first build a certified geometric coordinate chart for nearby candidates.
 
-Questions for the next session:
-- local existence and uniqueness conditions near \(u=t\);
-- relation to reach/tubular neighborhoods and Degen's admissibility assumptions;
-- whether the normal branch can be certified without a full two-parameter Hausdorff search;
-- how much algebraic degree grows when maximizing the resulting normal distance over \(t\).
+Detailed analysis: `docs/internal/derivations/degen_admissibility_lesson.md`.
 
-## Secondary repair route
+## Current main object — nonlinear normal branch
 
-Localize the curvature remainder to the actual shifted arc interval. Keep this parked until the normal-correspondence route is assessed; moving arc-length intervals may destroy the clean native-parameter algebra.
+Define
+\[
+F(t,u):=(\widetilde C(t)-C(u))\cdot C'(u).
+\]
+Seek a local branch \(u=\sigma(t)\) satisfying
+\[
+F(t,\sigma(t))=0.
+\]
+For fixed \(t\) and cubic reference span, \(\deg_u F\le5\).
 
-## Stop / pivot conditions
+At a normal root, with \(r=\widetilde C(t)-C(u)\),
+\[
+F_u=-\|C'(u)\|^2+r\cdot C''(u).
+\]
+Hence a natural local nondegeneracy condition is
+\[
+\boxed{\|C'(u)\|^2-r\cdot C''(u)>0.}
+\]
+In arc length this becomes \(1-r\cdot\kappa_{\rm vec}>0\), and \(\|r\|\kappa<1\) is a simple sufficient condition.
 
-Pause or pivot if nonlinear normal correspondence requires global branch search comparable to Hausdorff, or if branch uniqueness fails routinely on ordinary CAD curves.
+The branch derivative is
+\[
+\boxed{
+\sigma'(t)=
+\frac{\widetilde C'(t)\cdot C'(\sigma(t))}
+{\|C'(\sigma(t))\|^2-r\cdot C''(\sigma(t))}.
+}
+\]
+Thus normal-coordinate degeneracy and orientation loss are separate conditions.
+
+## Major synthesis with previous work
+
+At the synchronized guess \(u=t\), one Newton/IFT correction gives
+\[
+\boxed{
+\sigma(t)-t\approx-
+\frac{E(t)\cdot C'(t)}{\|C'(t)\|^2}.
+}
+\]
+This is exactly the Session-0005 tangential shift in native parameter.
+
+Therefore the earlier first-order theory is retained as the linearization/predictor for the nonlinear normal branch rather than being discarded after the counterexample.
+
+## Normal-graph target class
+
+If the candidate can be written as a one-to-one normal graph
+\[
+\widetilde C(\tau(u))=C(u)+r(u),\qquad r(u)\perp C'(u),
+\]
+and each matched \(C(u)\) is the unique nearest point on the reference, then
+\[
+\boxed{d_H(C,\widetilde C)=\|r\|_\infty.}
+\]
+Once admissibility is established, the sup norm of the deviation is exact rather than a global conservative surrogate.
+
+## Revised role of the Green layer
+
+The Green layer remains central but changes role:
+- exact representation/synchronized error;
+- cheap early bound;
+- predictor \(\sigma_0=t-(E\cdot C')/\|C'\|^2\);
+- potential source of a local root interval and admissibility certificate.
+
+The nonlinear normal metric is not yet known to be computationally cheap.
+
+## Current main risk
+
+The quintic degree for fixed \(t\) is not the hard part. The hard part is branch certification:
+- multiple normal roots;
+- continuous selection of the intended root;
+- branch switching near self-approach / small reach;
+- possible coupled algebra when maximizing the deviation along the implicit branch.
+
+## Next narrow target
+
+Develop a **sufficient admissibility certificate** for one nearby normal branch using quantities already available from \(E=G_De\).
+
+Questions:
+- can the first-order predictor be enclosed in a root interval where \(F_u\) has one sign?
+- can regularity, curvature/tube separation, and tangent-angle bounds guarantee \(\sigma'>0\)?
+- can interval Newton / monotone-root arguments work spanwise without a global nearest-point search?
+- what assumptions are realistic for ordinary CAD simplification inputs?
+
+Do not yet maximize \(\|r\|_\infty\), design knot simplification, or claim a stage breakthrough.

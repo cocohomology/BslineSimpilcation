@@ -8,116 +8,120 @@ Status: complete.
 
 Established:
 - exact representation-complexity correspondence in the second-derivative domain;
-- exact fixed-endpoint Green transport of second-derivative error to synchronized positional error;
-- direct certified evaluation of synchronized error by fixed-degree one-variable calculations or Bézier subdivision.
+- exact fixed-endpoint Green transport to synchronized positional error;
+- direct certified evaluation by fixed-degree one-variable calculations or Bézier subdivision.
 
 ## Phase 2 — first geometry-aware correction
 
-Status: mathematically established but **not accepted as a final metric**.
+Status: useful first-order theory, but the global-curvature closure is rejected as a final metric.
 
-Established:
-- first-order tangential quotient in reference arc length;
+Retained:
 - normal error is the first-order geometric residual;
-- all first-order geometry-aware ingredients are fixed-degree certifiable on cubic spans;
-- direct correspondence monotonicity test \(H>0\).
+- tangent removal in arc length;
+- fixed-degree algebraic certification of the first-order quantities.
 
-Rejected as a final certification quantity after Session 0007:
+Rejected after Session 0007:
 \[
 N_{G,\perp}+\frac K2N_{G,\parallel}^2
 \]
-with one global curvature supremum \(K\). It can be arbitrarily conservative even when the two spline images are identical.
+with one global \(K\), because remote curvature can make the bound arbitrarily conservative.
 
-## Phase 3 — adversarial review and repair
+## Phase 3 — nonlinear local correspondence
 
-### Task 3.1 — first attack
+### Task 3.1 — first adversarial review
 
-Status: **complete (Session 0007)**.
+Status: complete (Session 0007).
 
-Results:
-- near-zero speed: theoretical framework survives; numerical conditioning remains;
-- high curvature at the location of a tangential shift: quadratic curvature term is genuinely necessary;
-- global remote curvature: decisive in-class counterexample breaks the usefulness of the global-\(K\) product;
-- near self-approach: no correctness failure, but correspondence-based bounds can be much stronger than Hausdorff;
-- short spans/double knots: conditioning issues only.
+### Task 3.2 — Degen revisited as a design method
 
-Conclusion: no TeX stage note yet. Repair locality before claiming a stage breakthrough.
+Status: **complete (Session 0008)**.
 
-### Task 3.2 — targeted Degen / nonlinear normal correspondence review
+Main conclusion: inherit Degen's architecture rather than simply copy his planar distance:
+\[
+\text{admissible neighbourhood}
+\to\text{unique correspondence}
+\to\text{deviation field}
+\to\text{norm}.
+\]
+
+For the normal equation
+\[
+F(t,u)=(\widetilde C(t)-C(u))\cdot C'(u)=0,
+\]
+we established:
+- degree \(\le5\) in \(u\) for fixed \(t\) on a cubic span;
+- IFT denominator
+  \[
+  \|C'(u)\|^2-r\cdot C''(u);
+  \]
+- orientation formula
+  \[
+  \sigma'(t)=
+  \frac{\widetilde C'(t)\cdot C'(\sigma(t))}
+  {\|C'(\sigma(t))\|^2-r\cdot C''(\sigma(t))};
+  \]
+- the previous first-order shift is exactly the Newton/IFT linearization
+  \[
+  \sigma-t\approx-(E\cdot C')/\|C'\|^2;
+  \]
+- on a genuine one-to-one normal graph with unique nearest projection,
+  \[
+  d_H=\|r\|_\infty.
+  \]
+
+### Task 3.3 — sufficient admissibility certificate
 
 **Next session only.**
 
-Use the uploaded Degen paper and the new counterexample as the organizing question, not as a broad literature survey.
+Goal: avoid solving the global nearest-point problem by proving that one nearby root branch is unique and orientation preserving using cheap data from the Green layer.
 
-Study the local normal condition
-\[
-(\widetilde C(t)-C(u))\cdot C'(u)=0.
-\]
-
-Goals:
-- recover Degen's precise normal-distance/correspondence definition and hypotheses;
-- derive local existence/uniqueness near \(u=t\) using an implicit-function/tubular-neighborhood viewpoint;
-- determine exactly which hypothesis prevents branch switching near self-approach;
-- check whether same-image reparameterizations give exact zero on the correct branch;
-- exploit cubic structure: for fixed \(t\), the normal equation is degree at most five in \(u\);
-- estimate whether branch certification and maximization over \(t\) remain substantially simpler than full Hausdorff computation.
+Study:
+1. predictor
+   \[
+   u_0(t)=t-\frac{E\cdot C'}{\|C'\|^2};
+   \]
+2. an interval around \(u_0\) where \(F_u\) keeps one sign;
+3. sufficient curvature/tube and tangent-angle conditions;
+4. interval-Newton or monotone-root certification per local span;
+5. continuity across spline knots and double knots;
+6. whether the certificate is realistic for ordinary CAD inputs rather than only tiny perturbations.
 
 Success criterion:
-- a local nonlinear correspondence that fixes the remote-curvature counterexample and has a plausible certified algebraic route.
+- a branch-existence/uniqueness/orientation certificate that is local and fixed-dimensional, with no global pairwise curve search.
 
 Failure criterion:
-- selecting/certifying the correct root branch is essentially the full nearest-point/Hausdorff problem.
+- admissibility certification itself requires a global root-selection problem comparable to Hausdorff computation.
 
 Out of scope:
-- full simplification algorithm;
+- optimizing the nonlinear normal distance;
+- simplification primitives;
 - source code;
-- broad free-knot literature;
-- TeX stage note.
+- full TeX stage note.
 
-### Task 3.3 — local curvature remainder
+## Phase 4 — second adversarial review / stage decision
 
-Parked as fallback.
-
-Potential idea:
-\[
-\|R(s)\|\le\int_0^{|\delta(s)|}(|\delta(s)|-r)\,\kappa(s\pm r)\,dr.
-\]
-This restores locality but may require moving arc-length intervals/inversion. Investigate only if nonlinear normal correspondence proves too expensive.
-
-## Phase 4 — second attack / stage decision
-
-Only after Task 3.2.
+Only after Task 3.3.
 
 Attack:
 - branch ambiguity near self-approach;
-- high curvature / small reach;
-- low-speed parameterization;
+- high curvature / small tube radius;
+- near-zero speed;
 - double knots;
-- exact same-image parameter changes;
-- computational degree and root multiplicity.
+- same-image reparameterization;
+- cost of following an implicit normal branch.
 
-If the repaired framework survives:
-- perform targeted prior-art verification;
-- mark a stage breakthrough;
-- write the first self-contained TeX note with Green-function background and pseudocode-level certification logic.
-
-If it fails:
-- record the failure mechanism and reconsider whether the project should accept synchronized/Fréchet-like error as the optimization metric with final Hausdorff certification only.
+If the repaired framework survives, perform targeted prior-art verification and consider the first self-contained TeX note.
 
 ## Phase 5 — simplification algorithm
 
-Postponed.
-
-Only after a geometry-aware bridge survives adversarial review should the project formulate weighted PL simplification under
-\[
-\kappa=K_0+2J.
-\]
+Postponed until a geometric bridge survives review.
 
 ## Parking lot
 
-- optimized affine reconstruction instead of fixed endpoints;
-- closed/periodic curves;
-- forcing \(C^2\) candidates;
-- sharp classical Green \(L^p\) constants;
+- localized curvature-remainder route;
 - symmetric use of both curves as reference;
-- localized curvature remainder;
-- final choice between Hausdorff-only versus order-preserving geometric semantics.
+- exact reach/tube computation;
+- final choice between Hausdorff-only and order-preserving semantics;
+- optimized affine reconstruction;
+- closed/periodic curves;
+- sharp classical Green \(L^p\) constants.
