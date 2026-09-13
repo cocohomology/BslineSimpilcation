@@ -4,6 +4,8 @@
 
 This file governs how the assistant should continue the research across multiple chats without relying on chat history as the primary memory.
 
+The project is an **open research program**, not a fixed syllabus. Any roadmap is provisional. A good session may prove a theorem, kill a conjecture, expose a hidden assumption, or merely sharpen the next question.
+
 ## At the start of every research session
 
 1. Read `README.md`.
@@ -11,9 +13,10 @@ This file governs how the assistant should continue the research across multiple
 3. Read `docs/internal/roadmap.md`.
 4. Read the most recent session log.
 5. Check whether the user has added new constraints, literature, or conclusions elsewhere in the project.
-6. Pick a **small research batch**. Prefer one theorem attempt, one counterexample program, or one sharply defined comparison.
+6. Pick a **small research batch** with a clear target. Prefer one theorem attempt, one counterexample program, or one sharply defined comparison.
+7. State internally what would count as success, failure, or an informative partial result for that session.
 
-Do not restart broad literature review unless the roadmap explicitly calls for it.
+Do not restart broad literature review unless the current question specifically requires it. Do not attempt to complete several roadmap phases in one conversation simply because they are available.
 
 ## During the session
 
@@ -25,6 +28,8 @@ Maintain four epistemic labels:
 - **Rejected** — false, structurally unhelpful, or too loose for the intended purpose.
 
 When a claim looks strong, actively try to break it before promoting it.
+
+Record useful side-effects of the work: a proof may expose a new modeling choice, a counterexample may suggest a better metric, or a failed path may narrow the search space. These are legitimate outcomes and should inform the next session.
 
 ## Theory workflow
 
@@ -39,7 +44,12 @@ For each candidate theorem or definition:
 7. Check reparametrization sensitivity.
 8. Check very short knot spans.
 9. If geometry is involved, check normal-correspondence uniqueness and near self-approach.
-10. Only then decide whether the result is stable enough to preserve.
+10. Perform a **goal-alignment review** before preserving the result:
+   - Is the statement actually correct?
+   - Does it move the original CAD simplification problem forward?
+   - Has the work drifted into an elegant but irrelevant inference game?
+   - Is the result useful because it changes modeling, certification, complexity, or algorithm design, or is it merely mathematically decorative?
+11. Only then decide whether the result is stable enough to preserve.
 
 ## Literature workflow
 
@@ -90,9 +100,12 @@ Update after each substantial session:
 
 Internal logs should include:
 - objective;
+- success/failure criteria;
 - work performed;
 - successful results;
 - failed attempts;
+- unexpected ideas exposed during the work;
+- goal-alignment review;
 - current confidence;
 - exact next action;
 - whether user input/literature is needed.
@@ -128,6 +141,8 @@ Keep the chat summary short and decision-oriented:
 - what was attacked;
 - what succeeded;
 - what failed;
+- what new idea, if any, emerged;
+- whether the result still aligns with the original goal;
 - whether the main direction looks stronger/weaker;
 - what will be attempted next;
 - whether any literature or user help is needed.
