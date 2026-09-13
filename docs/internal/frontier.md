@@ -1,184 +1,132 @@
 # Research Frontier — Internal
 
-## Current narrow problem
+## Current setting
 
-Work with regular \(C^1\), cubic, non-rational spline curves \(C:[a,b]\to\mathbb R^d\), using the endpoint-preserving gauge unless explicitly stated otherwise.
-
-Canonical notation:
+Work with regular \(C^1\), cubic, non-rational spline curves \(C:[a,b]\to\mathbb R^d\), preserving endpoints. Canonical notation:
 \[
 q=C'',\qquad \widetilde q=\widetilde C'',\qquad e=q-\widetilde q,
 \qquad E=C-\widetilde C=G_De.
 \]
 
----
-
 ## Stable foundation
 
-### F1. Exact D2 reduction — Session 0002
-
+### F1 — exact \(D^2\) reduction
 \[
-D^2:S^1_3\to PL_{\rm disc}
+D^2:S_3^1\to PL_{\rm disc}
 \]
-is onto with affine kernel. The jump/kink structure of \(q=C''\) records minimal cubic knot multiplicity exactly. If \(K_0\) counts continuous kinks and \(J\) jumps,
+is onto with affine kernel. Jumps/kinks of \(q\) encode minimal cubic knot multiplicity exactly. With \(K_0\) continuous kinks and \(J\) jumps,
 \[
 \kappa(q)=K_0+2J,
-\qquad N_{\rm ctrl}=4+\kappa(q)
+\qquad N_{\rm ctrl}=4+\kappa(q).
 \]
-for a minimal open/clamped cubic.
 
-### F2. Fixed-endpoint Green operator — Session 0003
-
-For
-\[
-E''=e,\qquad E(a)=E(b)=0,
-\]
+### F2 — exact synchronized error
+Under \(E(a)=E(b)=0\),
 \[
 E=G_De,
+\qquad N_G=\|E\|_\infty,
+\]
+and
+\[
+d_H(\operatorname{Im}C,\operatorname{Im}\widetilde C)\le N_G.
+\]
+
+### F3 — direct certification of \(N_G\)
+For PL \(e\), \(E\) is piecewise cubic. Its Euclidean maximum reduces to degree-at-most-five stationarity equations, or to certified cubic Bézier subdivision.
+
+### F4 — first-order quotient of tangential error
+Using reference arc length, let \(T\) be unit tangent and \(K\) an essential curvature bound. Define
+\[
+N_{G,\perp}=\sup\|P_NE\|,
 \qquad
-N_G(e):=\|E\|_\infty.
+N_{G,\parallel}=\sup|E\cdot T|.
 \]
-Then \(N_G\) is exact synchronized positional error and
+The correspondence
 \[
-d_H(\operatorname{Im}C,\operatorname{Im}\widetilde C)\le N_G(e).
+\rho(s)=s-E(s)\cdot T(s)
 \]
-
-### F3. Direct certification of \(N_G\) — Session 0004
-
-For PL \(e\), the error curve \(E\) is piecewise cubic. Its Euclidean max norm is obtained from span boundaries and roots of
-\[
-E\cdot E'=0,
-\]
-a degree-at-most-five polynomial per span. A second certified route uses cubic Bézier convex-hull bounds and de Casteljau subdivision.
-
-Thus synchronized error is both exact and low-degree certifiable.
-
-### F4. Arc-length tangential quotient — Session 0005
-
-Let \(s\) be arc length of the regular reference curve, \(T=dC/ds\), and
-\[
-K:=\operatorname*{ess\,sup}\kappa
-\]
-the geometric curvature bound.
-
-The candidate displacement is \(\Delta=\widetilde C-C=-E\). Define the signed tangential shift
-\[
-\delta(s)=\Delta(s)\cdot T(s)=-E(s)\cdot T(s),
-\qquad
-\rho(s)=s+\delta(s).
-\]
-If endpoints agree and
+removes tangential synchronized error to first order. When \(\rho\) is orientation preserving,
 \[
 \boxed{
-\|D_sE\|_\infty+K\|E\|_\infty<1,
+d_H\le N_{G,\perp}+\frac K2N_{G,\parallel}^2.
 }
 \]
-then \(\rho\) is an orientation-preserving homeomorphism of the complete arc-length interval.
+For a straight line, pure tangential redistribution is recognized exactly; for curved pure reparameterization the residual is generally quadratic, not zero.
 
-Let
+### F5 — geometry-aware terms remain fixed-degree certifiable
+On a cubic span define
 \[
-N_{G,\perp}(e)=\sup_t\|P_{N(t)}E(t)\|,
-\qquad
-N_{G,\parallel}(e)=\sup_t|E(t)\cdot T(t)|.
+v=C',\quad a=C'',\quad S=v\cdot v,\quad A=E\cdot E,\quad B=E\cdot v,\quad U=E'\cdot E'.
 \]
 Then
 \[
-\boxed{
- d_H(\operatorname{Im}C,\operatorname{Im}\widetilde C)
-\le d_F^+(C,\widetilde C)
-\le
-N_{G,\perp}(e)+\frac K2N_{G,\parallel}(e)^2
-}
+\|P_NE\|^2=\frac{AS-B^2}{S},
+\qquad
+|E\cdot T|^2=\frac{B^2}{S},
+\qquad
+\|D_sE\|^2=\frac{U}{S}.
 \]
-and hence
+For curvature,
 \[
-\boxed{
- d_H\le N_{G,\perp}(e)+\frac K2N_G(e)^2.
-}
+\kappa^2=\frac{W}{S^3},
+\qquad
+W=S(a\cdot a)-(v\cdot a)^2,
 \]
+and the derivative relation \(a=v'\) lowers \(\deg W\) to at most four.
 
-Interpretation: synchronized normal error is the first-order geometric residual; tangential error is a first-order reparameterization direction and contributes only quadratically through curvature.
+Exact maxima reduce to fixed-degree one-variable equations:
+- normal error: degree \(\le13\);
+- tangential error: degree \(\le8\) after removing a zero factor;
+- \(\|D_sE\|\): degree \(\le6\);
+- curvature: degree \(\le7\).
 
-Detailed derivation: `docs/internal/derivations/arc_length_tangential_quotient.md`.
+More importantly, the correspondence monotonicity can be checked directly. Since
+\[
+\delta=-\frac{B}{\sqrt S},
+\]
+\[
+\rho'(s)=\frac{H}{2S^2},
+\qquad
+\boxed{H=2S^2-2B'S+BS'.}
+\]
+Thus, under regularity \(S>0\),
+\[
+\boxed{\rho'>0\iff H>0,}
+\]
+and \(H\) has degree at most eight.
 
----
+This is stronger and less conservative than the previous sufficient condition based on separate global norm maxima.
 
-## Important lesson from Session 0005
+Detailed derivations:
+- `docs/internal/derivations/arc_length_tangential_quotient.md`
+- `docs/internal/derivations/geometry_aware_certification.md`
 
-A direct correction in the original parameter leads to a remainder involving \(\|C''\|\), which is contaminated by tangential speed variation. A badly parameterized straight line may have large \(C''\) despite zero geometric curvature.
+## Current interpretation
 
-Using reference arc length removes this artifact: the remainder depends on geometric curvature \(K\), and for a straight line \(K=0\) the purely tangential correction is exact.
+The current framework now has a coherent chain:
 
-This is the first point where the framework genuinely improves the bad-parameter problem rather than merely restating synchronized error.
+1. exact representation complexity in the \(C''\) domain;
+2. exact synchronized positional error through a Green operator;
+3. low-degree certification of synchronized error;
+4. first-order removal of parameterization artifacts by tangential quotient;
+5. a certified Hausdorff upper bound whose required quantities remain local fixed-degree univariate problems.
 
----
+This is strong enough to trigger a stage review, but not yet enough to claim a final method or novelty.
 
-## Theorem status
+## Main risks to attack next
 
-### T1. Exact reconstruction / complexity theorem — ESTABLISHED
+- near-zero speed: formulas are valid under regularity but may be ill-conditioned;
+- high curvature: quadratic tangential correction may become too large;
+- curved pure reparameterization: true distance can be zero while current bound is only second-order small;
+- near self-approach: the constructed order-preserving correspondence may be safe but far from optimal;
+- use of separate global maxima \(N_{G,\perp}\), \(K\), \(N_{G,\parallel}\) may still be conservative;
+- short knot spans may create large coefficients even when geometry is mild;
+- double knots require one-sided curvature treatment.
 
-Session 0002.
+## Next target
 
-### T2a. Fixed-endpoint Green identity — ESTABLISHED
+A dedicated adversarial stage review, not more forward derivation.
 
-Session 0003.
+The review should attempt to break the framework with explicit families and determine whether the remaining conservatism is acceptable, structural, or fatal. A targeted literature search should accompany the review before any novelty claim.
 
-### T2c. PL-specific direct certification of \(N_G\) — ESTABLISHED
-
-Session 0004.
-
-### T3a. First-order tangential quotient with finite geometric bound — ESTABLISHED
-
-Session 0005.
-
-Caution: do not claim exact reparameterization invariance. On a curved pure reparameterization, the present bound is generally only second-order rather than zero.
-
-### T3b. Algebraic/certified evaluation of the geometry-aware bound — NEXT TARGET
-
-Need to determine whether the new quantities preserve the fixed-degree computational advantage:
-- \(N_{G,\perp}\);
-- \(\|D_sE\|_\infty\);
-- curvature bound \(K\);
-- monotonicity condition.
-
-Questions:
-- what rational/polynomial degrees arise spanwise?
-- can maxima/inequalities be certified with fixed-degree root isolation or Bernstein subdivision?
-- does tangent normalization cause numerical pathologies near low speed?
-- is the total cost still structurally local/linear in the number of spans?
-
-Do not design breakpoint optimization yet.
-
-### T4. Stronger nonlinear correspondence / exact reparameterization invariance — POSTPONED
-
-Only open this if the quadratic local bound proves insufficient.
-
----
-
-## Counterexamples/tests to preserve
-
-1. same straight line with nonlinear parameterization;
-2. curved pure reparameterization (true distance zero, current bound quadratic);
-3. short-span second-derivative spike;
-4. adjacent cancellation pair;
-5. near self-approach causing correspondence ambiguity;
-6. high curvature;
-7. double-knot jump;
-8. near-zero speed / loss of regularity.
-
----
-
-## Goal-alignment review after Session 0005
-
-The research remains strongly aligned. The previous dominant weakness was parameterization sensitivity. Session 0005 shows that a local order-preserving correspondence can quotient out tangential error to first order while retaining a certified Hausdorff upper bound.
-
-The next decision point is computational: if the geometry-aware terms are still fixed-degree certifiable for cubic splines, the framework may have crossed from a useful reformulation into a genuinely viable simplification architecture.
-
----
-
-## Stop / pivot conditions
-
-Pause or pivot if:
-- evaluating \(N_{G,\perp}\), curvature, or monotonicity becomes comparable to full curve-curve correspondence search;
-- low-speed regions make the arc-length normalization unstable in realistic inputs;
-- the quadratic curvature term is systematically too conservative;
-- exact reparameterization invariance is required and forces a problem essentially equivalent to full Fréchet/Hausdorff optimization.
+If the framework survives, write the first full TeX note. If it fails, record the failure before redesigning the metric/correspondence.

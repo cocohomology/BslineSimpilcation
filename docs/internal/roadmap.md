@@ -1,128 +1,123 @@
 # Short-Horizon Roadmap — Internal
 
-This file is intentionally volatile. It describes only the next few research sessions.
+This roadmap is intentionally volatile.
 
-## Phase 1 — D2 reduction and synchronized error
+## Phase 1 — exact \(D^2\) reduction and synchronized error
 
 Status: complete.
 
-Established across Sessions 0002–0004:
-- exact correspondence between cubic representation complexity and PL second-derivative singularity structure;
+Established:
+- exact representation-complexity correspondence in the second-derivative domain;
 - exact fixed-endpoint Green transport of second-derivative error to synchronized positional error;
-- direct certified evaluation of that synchronized error by fixed-degree univariate calculations or Bézier subdivision.
+- direct certified evaluation of synchronized error by fixed-degree one-variable calculations or Bézier subdivision.
 
-Classical \(L^p\) operator bounds remain parked as secondary pruning/comparison tools.
+Classical \(L^p\) bounds remain parked as secondary pruning/comparison tools.
 
----
+## Phase 2 — first geometry-aware correction
 
-## Phase 2 — Parameterization / geometry-aware correction
+Status: complete through Session 0006.
 
-### Task 2.1 — Tangential quotient
+Established:
+- arc-length tangential shift removes synchronized tangential error to first order;
+- finite bound
+  \[
+  d_H\le N_{G,\perp}+\frac K2N_{G,\parallel}^2;
+  \]
+- normal/tangential error, curvature, and regularity are rational fixed-degree spline-span quantities;
+- correspondence monotonicity is exactly testable by
+  \[
+  H=2S^2-2B'S+BS'>0,
+  \]
+  with \(\deg H\le8\).
 
-Status: **complete (Session 0005)**.
+Thus the first geometry-aware layer preserves the fixed-degree univariate character of the synchronized theory.
 
-Using the reference arc-length coordinate, define the tangential arc-length shift
-\[
-\delta=-E\cdot T,
-\qquad \rho(s)=s+\delta(s).
-\]
-Under
-\[
-\|D_sE\|_\infty+K\|E\|_\infty<1,
-\]
-this is a monotone endpoint-fixing correspondence. The resulting certified bound is
-\[
- d_H\le
-N_{G,\perp}(e)+\frac K2N_{G,\parallel}(e)^2
-\le
-N_{G,\perp}(e)+\frac K2N_G(e)^2.
-\]
-
-This promotes normal projection from heuristic to a rigorous first-order quotient quantity.
-
-### Task 2.2 — Is the geometry-aware bound still cheap?
+## Phase 3 — adversarial stage review
 
 **Next session only.**
 
-Goal: determine whether all terms needed by the Session 0005 theorem remain fixed-degree certifiable on cubic spline spans.
+Do not add another positive theorem before attacking the current framework.
+
+### 3.1 Pure reparameterization families
 
 Study:
+- straight line: should give exact zero bound under monotone redistribution;
+- circle or another constant-curvature reference: true geometric distance zero for pure reparameterization, current bound should show explicit second-order conservatism;
+- determine scaling constants, not only big-O notation.
 
-1. Normal error
-   \[
-   N_{G,\perp}=\sup\|P_NE\|.
-   \]
-   On one span \(E\) is cubic and \(C'\) quadratic. Derive the rational/polynomial form of
-   \[
-   \|P_NE\|^2
-   =\|E\|^2-\frac{(E\cdot C')^2}{\|C'\|^2}.
-   \]
-   Determine the degree of the stationary equation after clearing denominators.
+### 3.2 Low-speed regular parameterizations
 
-2. Arc-length derivative term
-   \[
-   \|D_sE\|=\frac{\|E'\|}{\|C'\|}.
-   \]
-   Determine a certified finite procedure for its maximum.
+Construct geometrically ordinary cubics with \(\min\|C'\|\) small but positive.
 
-3. Curvature
-   \[
-   \kappa=\left\|\frac{dT}{ds}\right\|.
-   \]
-   Express \(\kappa^2\) rationally in \(C',C''\) and determine whether \(K=\sup\kappa\) is fixed-degree certifiable.
+Questions:
+- which rational quantities become numerically large only because of parameter speed?
+- does arc-length invariance prevent theoretical blow-up even if coefficient conditioning is poor?
+- should a practical method locally renormalize or reject near-singular spans?
 
-4. Monotonicity condition
-   Decide whether
-   \[
-   \|D_sE\|_\infty+K\|E\|_\infty<1
-   \]
-   can be certified with the above ingredients without a difficult coupled optimization.
+### 3.3 High curvature and short spans
 
-Success criterion:
-- all quantities reduce to independent fixed-degree univariate algebraic problems per span, so geometry awareness preserves the computational advantage.
+Test whether
+\[
+\frac K2N_{G,\parallel}^2
+\]
+becomes useless in realistic high-curvature/tiny-span configurations.
 
-Failure criterion:
-- tangent/curvature normalization introduces degree growth, singular conditioning, or coupled optimization severe enough to erase the advantage.
+Separate genuine geometric curvature from parameterization artifacts.
 
-Out of scope:
-- breakpoint optimization;
-- exact nonlinear normal correspondence;
-- full simplification pseudocode;
-- source code.
+### 3.4 Near self-approach
 
----
+The current correspondence is order preserving and therefore valid without nearest-point uniqueness. Determine whether near self-approach merely makes the bound nonoptimal or creates any actual logical failure.
 
-## Phase 3 — Stage review
+### 3.5 Separate-maxima conservatism
 
-Only after Task 2.2.
+The current bound uses
+\[
+N_{G,\perp}+\frac K2N_{G,\parallel}^2.
+\]
+Worst normal error, worst curvature, and worst tangential error may occur at different locations.
 
-If the geometry-aware theorem and its certification both survive:
-- perform an adversarial review with pure reparameterizations, high curvature, low-speed regular curves, short knot spans, and near self-approach;
-- decide whether the framework merits the first full TeX note;
-- check literature specifically for closely related local normal/Fréchet bounds before making any novelty claim.
+Study whether a tighter still-cheap quantity should be
+\[
+\sup_s\left(\|P_NE(s)\|+\frac12 K_{\rm local}(s)\,\delta(s)^2\right)
+\]
+or a related localized bound. Do not adopt it unless certification remains simple.
 
-If Task 2.2 fails, reconsider whether a cheaper surrogate for the normal quantity is needed.
+### 3.6 Targeted literature check
 
----
+Search specifically for:
+- local normal graph / tubular-neighborhood error bounds for curves;
+- linearization of Fréchet or shape-space distance under reparameterization;
+- certified spline approximation error using tangent/normal decomposition;
+- any known form matching the present first-order tangential quotient.
 
-## Phase 4 — Low-complexity approximation algorithm
+Purpose: identify prior art and missing hypotheses, not broad literature expansion.
 
-Postponed.
+## Stage decision after Phase 3
 
-Only after the geometry-aware bound survives the stage review:
-- formulate weighted PL simplification with \(\kappa=K_0+2J\);
-- identify delete/merge/move/free-breakpoint primitives;
-- write pseudocode before any implementation;
-- design computation primarily to falsify assumptions and measure conservatism.
+If the framework survives:
+- mark the first stage breakthrough;
+- write a self-contained TeX note including Green-function background, exact \(D^2\) reduction, certification theory, parameterization quotient, limitations, and a pseudocode-level certification pipeline.
 
----
+If it fails:
+- document the counterexample/failure mechanism;
+- decide whether to strengthen the nonlinear correspondence or abandon the normal-projection route.
+
+## Phase 4 — simplification algorithm
+
+Postponed until after the stage review.
+
+Only then consider weighted PL simplification under
+\[
+\kappa=K_0+2J,
+\]
+with delete/merge/move/free-breakpoint primitives and pseudocode before implementation.
 
 ## Parking lot
 
 - optimized affine reconstruction instead of fixed endpoints;
-- force continuous second derivative for \(C^2\) candidates;
 - closed/periodic curves;
-- sharp classical \(L^p\to L^\infty\) Green constants;
-- ranking reversals between \(L^p\) and Green/normal metrics;
-- stronger nonlinear correspondence to remove the remaining quadratic error of curved pure reparameterization;
-- symmetric use of both reference orientations and taking the better bound.
+- forcing \(C^2\) candidates;
+- sharp classical Green \(L^p\) constants;
+- stronger nonlinear correspondence yielding exact reparameterization invariance;
+- symmetric bounds using both curves as reference;
+- localized curvature remainder if the global \(K\) term proves too loose.
