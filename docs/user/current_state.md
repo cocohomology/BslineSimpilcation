@@ -2,30 +2,25 @@
 
 ## Scope
 
-The current branch studies regular \(C^1\), cubic, non-rational spline curves. The basic reduction is
+The research still targets regular \(C^1\), cubic, non-rational spline curves. The basic reduction is
 \[
 C\xrightarrow{D^2}q=C'',
 \]
 where \(q\) is piecewise linear and may jump at double knots.
 
-The long-term goal remains tolerance-constrained spline simplification: reduce representation complexity while controlling geometric error more tightly than classical global \(L^p\)-type surrogates, without paying the full cost of direct Hausdorff optimization.
+The long-term objective is unchanged: simplify representation complexity under geometric tolerance, using an error structure tighter than classical global \(L^p\)-type surrogates but cheaper and more structured than direct Hausdorff optimization.
 
 ---
 
-## 1. Representation complexity is exact in the \(C''\) domain
+## Stable foundation
+
+### 1. Representation complexity is exact in the \(C''\) domain
 
 For \(C^1\) piecewise cubics,
 \[
 D^2:S_3^1\to PL_{\rm disc}
 \]
-is onto with affine kernel.
-
-For \(q=C''\):
-- a jump corresponds to a double cubic knot;
-- a continuous kink corresponds to a simple knot;
-- no jump/kink means the breakpoint is redundant.
-
-If \(K_0\) is the number of continuous kinks and \(J\) the number of jumps,
+is onto with affine kernel. Jumps and continuous kinks of \(C''\) encode double and simple cubic knots respectively. With \(K_0\) kinks and \(J\) jumps,
 \[
 \kappa(q)=K_0+2J,
 \qquad
@@ -33,11 +28,7 @@ N_{\rm ctrl}=4+\kappa(q)
 \]
 for a minimal open/clamped cubic representation.
 
-So the second-derivative domain carries the fixed-degree representation complexity exactly.
-
----
-
-## 2. Fixed-endpoint synchronized error is exact and directly certifiable
+### 2. Fixed-endpoint synchronized error is exact and cheap to certify
 
 Let
 \[
@@ -47,143 +38,116 @@ E=C-\widetilde C,
 \]
 Then
 \[
-E=G_De
+E=G_De,
+\qquad N_G=\|E\|_\infty,
 \]
-through the fixed-endpoint Green operator, and
+and
 \[
-N_G(e)=\|E\|_\infty
+d_H\le N_G.
 \]
-is exactly the synchronized positional error. Hence
+For PL \(e\), \(E\) is piecewise cubic and its exact maximum reduces to fixed-degree one-variable polynomial extrema (degree at most five for the basic synchronized max), or certified Bézier subdivision.
+
+### 3. Normal error is the correct first-order geometric residual
+
+Using reference arc length and unit tangent \(T\), a first-order tangential shift removes the synchronized tangential component. Locally,
 \[
-d_H(\operatorname{Im}C,\operatorname{Im}\widetilde C)\le N_G.
+\gamma(s+\delta)
+=\gamma(s)+T\delta+\frac12\kappa_{\rm vec}\delta^2+o(\delta^2).
 \]
+Thus normal displacement enters at first order, while tangential displacement affects geometry only at second order through curvature.
 
-For PL \(e\), the error curve \(E\) is piecewise cubic. Its exact Euclidean maximum reduces to fixed-degree one-variable polynomial problems (degree at most five for the basic synchronized max), or alternatively to certified cubic Bézier subdivision.
-
-Thus ordinary \(L^p\) norms are no longer needed as the primary synchronized error measure merely for computational convenience.
-
-A short Green-function refresher is stored in `docs/user/background/green_functions.md` and should be included in any later self-contained TeX note.
+The normal/tangential terms, curvature, regularity, and monotonicity of the constructed correspondence all remain fixed-degree algebraic certification problems on cubic spans.
 
 ---
 
-## 3. First-order parameterization correction
+## First adversarial review — an important negative result
 
-The main weakness of synchronized error is that tangential displacement can be mostly a parameterization artifact.
-
-Using the arc length of the reference curve, let \(T\) be the unit tangent and \(K\) a curvature bound. Decompose the synchronized error into normal and tangential parts and define
-\[
-N_{G,\perp}=\sup\|P_NE\|,
-\qquad
-N_{G,\parallel}=\sup|E\cdot T|.
-\]
-
-The arc-length shift
-\[
-\rho(s)=s-E(s)\cdot T(s)
-\]
-removes the tangential component to first order. When this shift is orientation preserving,
+The previous candidate global bound was
 \[
 \boxed{
-d_H\le N_{G,\perp}+\frac K2N_{G,\parallel}^2.
+d_H\le N_{G,\perp}+\frac K2N_{G,\parallel}^2,
 }
 \]
+where \(K=\sup\kappa\) is one global curvature bound.
 
-Interpretation:
-- normal synchronized error is the first-order geometric residual;
-- tangential synchronized error contributes only quadratically through geometric curvature.
+The inequality is correct, but Session 0007 produced an explicit **regular \(C^1\) piecewise-cubic counterexample showing that it can be arbitrarily conservative even when the two curve images are exactly identical.**
 
-For a straight reference line, pure monotone tangential redistribution is recognized exactly as zero geometric error. For a curved pure reparameterization, the current bound is generally only second-order small rather than exactly zero.
+The construction is simple in principle:
 
----
+- one part of the reference curve is a straight segment;
+- a small monotone piecewise-cubic tangential redistribution changes only the parameterization of that straight segment;
+- elsewhere, where the error is exactly zero, the reference curve contains a region of arbitrarily large curvature;
+- the candidate and reference trace exactly the same point set, so
+  \[
+  d_H=0;
+  \]
+- the synchronized error is purely tangential, so
+  \[
+  N_{G,\perp}=0;
+  \]
+- nevertheless the global term \((K/2)N_{G,\parallel}^2\) can be made arbitrarily large by increasing curvature in the unrelated remote region.
 
-## 4. The geometry-aware bound is still fixed-degree certifiable
+Therefore the current global-curvature expression is **rejected as a practical final metric**.
 
-This was the main question of Session 0006.
-
-On one cubic span, set
-\[
-v=C',\quad a=C'',\quad S=v\cdot v,\quad A=E\cdot E,\quad B=E\cdot v,\quad U=E'\cdot E'.
-\]
-Then
-\[
-\|P_NE\|^2=\frac{AS-B^2}{S},
-\qquad
-|E\cdot T|^2=\frac{B^2}{S},
-\qquad
-\|D_sE\|^2=\frac{U}{S}.
-\]
-Curvature is
-\[
-\kappa^2=rac{W}{S^3},
-\qquad
-W=S(a\cdot a)-(v\cdot a)^2,
-\]
-with \(\deg W\le4\) for a cubic span.
-
-The exact spanwise maxima reduce to fixed-degree univariate stationary equations:
-- normal error: degree at most 13;
-- tangential error: degree at most 8 after removing the zero factor;
-- curvature: degree at most 7;
-- \(\|D_sE\|\): degree at most 6.
-
-For a simple tolerance decision, direct polynomial inequalities often have lower degree than these exact-max calculations.
-
-### Direct monotonicity certification
-
-A particularly useful improvement is that the correspondence monotonicity need not be certified through a conservative global norm estimate.
-
-With
-\[
-\delta=-E\cdot T=-\frac{B}{\sqrt S},
-\]
-we obtain
-\[
-\rho'(s)=\frac{H}{2S^2},
-\qquad
-\boxed{H=2S^2-2B'S+BS'.}
-\]
-Therefore, under regularity \(S>0\),
-\[
-\boxed{\rho'>0\iff H>0,}
-\]
-and \(H\) has degree at most eight.
-
-So the first geometry-aware correction still requires only local fixed-degree one-variable certification, not a coupled curve-curve nearest-point search.
-
-Another useful fact is that the arc-length proof does **not** force an implementation to compute or invert arc length: all certification formulas can be evaluated in the original spline parameter using \(E,C',C''\).
+This does not invalidate the first-order analysis. It identifies the actual information loss: curvature was globalized independently of where the tangential displacement occurs.
 
 ---
 
-## Current assessment
+## What survived the attack
 
-The current chain is now coherent:
+The attack did not collapse the main program.
 
+A badly parameterized straight-line family with \(\min\|C'\|\to0\) is still recognized exactly as zero geometric error in exact arithmetic. This means arc-length normalization really does remove fake parameter-speed effects; very small speed is mainly a numerical-conditioning issue.
+
+High curvature itself is also not an artifact. When curvature and tangential shift occur at the same location, the \(\kappa\delta^2/2\) term is the correct second-order geometry and is asymptotically sharp. The repair therefore has to restore **locality**, not delete curvature.
+
+Short knot spans and double knots produce conditioning and one-sided-curvature issues but no logical contradiction.
+
+Near self-approach exposes a different limitation: the current construction uses an order-preserving correspondence and is therefore closer to a Fréchet-style upper bound than a Hausdorff-optimal matching. This is always safe, but can be much more conservative than Hausdorff when spatial correspondence is ambiguous. Later we will need to decide whether preserving traversal/order is desirable CAD semantics or merely unnecessary conservatism.
+
+---
+
+## Current stage verdict
+
+This was a useful failure rather than a collapse.
+
+The following pieces remain strong:
 \[
 \boxed{
 \text{exact representation complexity}
 \to
-\text{exact synchronized error}
+\text{exact synchronized Green error}
 \to
-\text{low-degree certification}
+\text{fixed-degree certification}
 \to
-\text{first-order parameterization quotient}
-\to
-\text{certified geometric upper bound}
+\text{normal error as first-order geometry}
 }
 \]
 
-and the last step still preserves the one-variable fixed-degree algebraic structure.
+What failed is the attempt to close the chain using one global curvature supremum.
 
-This is the first point where the framework looks like a plausible simplification architecture rather than only an interesting reformulation.
+Therefore **there is no stage-level TeX note yet**. Writing one now would prematurely polish a framework whose final geometric bridge has already shown a structural weakness.
 
-However, it is **not yet accepted as a stage breakthrough**. The next session is an adversarial review rather than another forward derivation.
+---
 
-The main risks are:
-- near-zero speed and numerical conditioning;
-- high curvature making the quadratic tangential term too large;
-- curved pure reparameterization, where the true distance is zero but the current bound remains second-order positive;
-- near self-approach, where the chosen order-preserving correspondence may be far from optimal;
-- conservatism from multiplying separate global maxima that may occur at different locations;
-- short knot spans and double-knot one-sided curvature.
+## Next research direction
 
-If the framework survives that review and a targeted prior-art check, the next milestone will be the first self-contained TeX note.
+The preferred repair is now a **nonlinear local normal correspondence** rather than another global estimate.
+
+Seek a local branch \(u=\sigma(t)\) satisfying
+\[
+\boxed{
+(\widetilde C(t)-C(u))\cdot C'(u)=0.
+}
+\]
+This is the natural nonlinear version of “remove tangential error.” For a cubic reference and fixed \(t\), the equation is polynomial of degree at most five in \(u\).
+
+This route is attractive because it should:
+- restore locality automatically;
+- give exact zero for genuine same-image reparameterizations on the same local branch;
+- avoid multiplying tangential error by curvature somewhere else on the curve;
+- connect directly to Degen's normal-distance framework already present in the project literature.
+
+The next session will therefore return to Degen with a very specific question: whether the normal correspondence can be made locally unique and certifiable without becoming essentially the full Hausdorff/nearest-point problem.
+
+A secondary fallback is to localize the curvature remainder to the actual shifted arc interval, but that may reintroduce arc-length inversion and is currently less attractive.

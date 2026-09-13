@@ -8,125 +8,128 @@ q=C'',\qquad \widetilde q=\widetilde C'',\qquad e=q-\widetilde q,
 \qquad E=C-\widetilde C=G_De.
 \]
 
-## Stable foundation
+## Stable foundation that survived the first attack
 
 ### F1 — exact \(D^2\) reduction
 \[
 D^2:S_3^1\to PL_{\rm disc}
 \]
-is onto with affine kernel. Jumps/kinks of \(q\) encode minimal cubic knot multiplicity exactly. With \(K_0\) continuous kinks and \(J\) jumps,
-\[
-\kappa(q)=K_0+2J,
-\qquad N_{\rm ctrl}=4+\kappa(q).
-\]
+is onto with affine kernel. Jump/kink structure of \(q\) records minimal cubic knot multiplicity exactly.
 
-### F2 — exact synchronized error
-Under \(E(a)=E(b)=0\),
+### F2 — exact synchronized Green error
+Under fixed endpoints,
 \[
 E=G_De,
 \qquad N_G=\|E\|_\infty,
 \]
 and
 \[
-d_H(\operatorname{Im}C,\operatorname{Im}\widetilde C)\le N_G.
+d_H\le N_G.
 \]
 
-### F3 — direct certification of \(N_G\)
-For PL \(e\), \(E\) is piecewise cubic. Its Euclidean maximum reduces to degree-at-most-five stationarity equations, or to certified cubic Bézier subdivision.
+### F3 — synchronized error is fixed-degree certifiable
+For PL \(e\), \(E\) is piecewise cubic. \(N_G\) reduces to degree-at-most-five stationarity equations or certified cubic Bézier subdivision.
 
-### F4 — first-order quotient of tangential error
-Using reference arc length, let \(T\) be unit tangent and \(K\) an essential curvature bound. Define
+### F4 — normal displacement is the correct first-order geometric residual
+Using reference arc length, the first-order shift
 \[
-N_{G,\perp}=\sup\|P_NE\|,
+\rho(s)=s-E\cdot T
+\]
+removes tangential synchronized error to first order. The local Taylor structure is sound:
+\[
+\gamma(s+\delta)=\gamma(s)+T\delta+\frac12\kappa_{\rm vec}\delta^2+o(\delta^2).
+\]
+Thus curvature-dependent quadratic tangential error is geometrically real.
+
+### F5 — all first-order geometry-aware ingredients are fixed-degree algebraic on cubic spans
+Normal/tangential projections, curvature, regularity, and the monotonicity of \(\rho\) remain fixed-degree univariate certification problems. In particular,
+\[
+\rho'(s)>0\iff H(t)>0,
 \qquad
-N_{G,\parallel}=\sup|E\cdot T|.
+H=2S^2-2B'S+BS',
 \]
-The correspondence
-\[
-\rho(s)=s-E(s)\cdot T(s)
-\]
-removes tangential synchronized error to first order. When \(\rho\) is orientation preserving,
-\[
-\boxed{
-d_H\le N_{G,\perp}+\frac K2N_{G,\parallel}^2.
-}
-\]
-For a straight line, pure tangential redistribution is recognized exactly; for curved pure reparameterization the residual is generally quadratic, not zero.
+with degree at most eight.
 
-### F5 — geometry-aware terms remain fixed-degree certifiable
-On a cubic span define
-\[
-v=C',\quad a=C'',\quad S=v\cdot v,\quad A=E\cdot E,\quad B=E\cdot v,\quad U=E'\cdot E'.
-\]
-Then
-\[
-\|P_NE\|^2=\frac{AS-B^2}{S},
-\qquad
-|E\cdot T|^2=\frac{B^2}{S},
-\qquad
-\|D_sE\|^2=\frac{U}{S}.
-\]
-For curvature,
-\[
-\kappa^2=\frac{W}{S^3},
-\qquad
-W=S(a\cdot a)-(v\cdot a)^2,
-\]
-and the derivative relation \(a=v'\) lowers \(\deg W\) to at most four.
+## Negative result N1 — the global curvature bound is not acceptable as a final metric
 
-Exact maxima reduce to fixed-degree one-variable equations:
-- normal error: degree \(\le13\);
-- tangential error: degree \(\le8\) after removing a zero factor;
-- \(\|D_sE\|\): degree \(\le6\);
-- curvature: degree \(\le7\).
-
-More importantly, the correspondence monotonicity can be checked directly. Since
+The previously proposed certification
 \[
-\delta=-\frac{B}{\sqrt S},
+ d_H\le N_{G,\perp}+\frac K2N_{G,\parallel}^2,
+\qquad K=\sup\kappa,
 \]
-\[
-\rho'(s)=\frac{H}{2S^2},
-\qquad
-\boxed{H=2S^2-2B'S+BS'.}
-\]
-Thus, under regularity \(S>0\),
-\[
-\boxed{\rho'>0\iff H>0,}
-\]
-and \(H\) has degree at most eight.
+is mathematically correct but can be arbitrarily conservative **inside the present cubic \(C^1\) model class**.
 
-This is stronger and less conservative than the previous sufficient condition based on separate global norm maxima.
+Explicit construction:
+- the error is a purely tangential monotone reparameterization supported on a straight region;
+- a disjoint region of the same curve has arbitrarily high curvature;
+- candidate and reference images are exactly identical, so \(d_H=0\);
+- nevertheless the global product equals \((K/2)A^2\) and can diverge as \(K\to\infty\).
 
-Detailed derivations:
-- `docs/internal/derivations/arc_length_tangential_quotient.md`
-- `docs/internal/derivations/geometry_aware_certification.md`
+Detailed counterexample: `docs/internal/derivations/adversarial_review_round1.md`.
+
+Interpretation: the failure is the **globalization of curvature**, not the first-order tangent/normal decomposition.
+
+## Negative/limitation N2 — order-preserving correspondence can be much stronger than Hausdorff
+
+The current construction controls an explicit Fréchet-like correspondence and then uses
+\[
+d_H\le d_F^+.
+\]
+Near self-intersection or strong self-approach, this can be much more conservative than point-set Hausdorff distance.
+
+This is not a logical error; it is a modeling issue. If CAD simplification should preserve traversal/order, this may be desirable. If only the image matters, a tubular/reach assumption or a more flexible correspondence is needed.
+
+## Attack results that did not break the theory
+
+### Low speed
+
+A straight-line family with \(\min\|C'\|\to0\) is still treated exactly in exact arithmetic. The problem is numerical conditioning only; the monotonicity polynomial becomes small like a power of the speed.
+
+### High curvature at the same location
+
+The \(\kappa\delta^2/2\) scaling is asymptotically sharp. Curvature cannot simply be removed; it must be localized or handled by a nonlinear correspondence.
+
+### Short spans / double knots
+
+No structural failure. Use span normalization and one-sided curvature; numerical conditioning remains a future engineering issue.
 
 ## Current interpretation
 
-The current framework now has a coherent chain:
+The first attack changes the status of the project:
 
-1. exact representation complexity in the \(C''\) domain;
-2. exact synchronized positional error through a Green operator;
-3. low-degree certification of synchronized error;
-4. first-order removal of parameterization artifacts by tangential quotient;
-5. a certified Hausdorff upper bound whose required quantities remain local fixed-degree univariate problems.
+- the core \(D^2\)/Green program remains alive;
+- the synchronized theory remains strong;
+- the normal component remains the right first-order geometric object;
+- but the simple global bound using one \(K=\sup\kappa\) is rejected as a practical final metric.
 
-This is strong enough to trigger a stage review, but not yet enough to claim a final method or novelty.
+No stage-level TeX note should be written yet.
 
-## Main risks to attack next
+## Current main target — nonlinear local normal correspondence
 
-- near-zero speed: formulas are valid under regularity but may be ill-conditioned;
-- high curvature: quadratic tangential correction may become too large;
-- curved pure reparameterization: true distance can be zero while current bound is only second-order small;
-- near self-approach: the constructed order-preserving correspondence may be safe but far from optimal;
-- use of separate global maxima \(N_{G,\perp}\), \(K\), \(N_{G,\parallel}\) may still be conservative;
-- short knot spans may create large coefficients even when geometry is mild;
-- double knots require one-sided curvature treatment.
+The preferred next route is to seek a local branch \(u=\sigma(t)\) satisfying
+\[
+\boxed{
+(\widetilde C(t)-C(u))\cdot C'(u)=0.
+}
+\]
+For fixed \(t\) and cubic \(C\), this is degree at most five in \(u\).
 
-## Next target
+Desired properties:
+- restore locality automatically;
+- exact zero on same-image reparameterizations along the same branch;
+- retain a stronger-than-Hausdorff but cheaper-than-global-nearest-point structure;
+- connect naturally to Degen's normal-distance framework.
 
-A dedicated adversarial stage review, not more forward derivation.
+Questions for the next session:
+- local existence and uniqueness conditions near \(u=t\);
+- relation to reach/tubular neighborhoods and Degen's admissibility assumptions;
+- whether the normal branch can be certified without a full two-parameter Hausdorff search;
+- how much algebraic degree grows when maximizing the resulting normal distance over \(t\).
 
-The review should attempt to break the framework with explicit families and determine whether the remaining conservatism is acceptable, structural, or fatal. A targeted literature search should accompany the review before any novelty claim.
+## Secondary repair route
 
-If the framework survives, write the first full TeX note. If it fails, record the failure before redesigning the metric/correspondence.
+Localize the curvature remainder to the actual shifted arc interval. Keep this parked until the normal-correspondence route is assessed; moving arc-length intervals may destroy the clean native-parameter algebra.
+
+## Stop / pivot conditions
+
+Pause or pivot if nonlinear normal correspondence requires global branch search comparable to Hausdorff, or if branch uniqueness fails routinely on ordinary CAD curves.

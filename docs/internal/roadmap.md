@@ -11,106 +11,106 @@ Established:
 - exact fixed-endpoint Green transport of second-derivative error to synchronized positional error;
 - direct certified evaluation of synchronized error by fixed-degree one-variable calculations or Bézier subdivision.
 
-Classical \(L^p\) bounds remain parked as secondary pruning/comparison tools.
-
 ## Phase 2 — first geometry-aware correction
 
-Status: complete through Session 0006.
+Status: mathematically established but **not accepted as a final metric**.
 
 Established:
-- arc-length tangential shift removes synchronized tangential error to first order;
-- finite bound
-  \[
-  d_H\le N_{G,\perp}+\frac K2N_{G,\parallel}^2;
-  \]
-- normal/tangential error, curvature, and regularity are rational fixed-degree spline-span quantities;
-- correspondence monotonicity is exactly testable by
-  \[
-  H=2S^2-2B'S+BS'>0,
-  \]
-  with \(\deg H\le8\).
+- first-order tangential quotient in reference arc length;
+- normal error is the first-order geometric residual;
+- all first-order geometry-aware ingredients are fixed-degree certifiable on cubic spans;
+- direct correspondence monotonicity test \(H>0\).
 
-Thus the first geometry-aware layer preserves the fixed-degree univariate character of the synchronized theory.
+Rejected as a final certification quantity after Session 0007:
+\[
+N_{G,\perp}+\frac K2N_{G,\parallel}^2
+\]
+with one global curvature supremum \(K\). It can be arbitrarily conservative even when the two spline images are identical.
 
-## Phase 3 — adversarial stage review
+## Phase 3 — adversarial review and repair
+
+### Task 3.1 — first attack
+
+Status: **complete (Session 0007)**.
+
+Results:
+- near-zero speed: theoretical framework survives; numerical conditioning remains;
+- high curvature at the location of a tangential shift: quadratic curvature term is genuinely necessary;
+- global remote curvature: decisive in-class counterexample breaks the usefulness of the global-\(K\) product;
+- near self-approach: no correctness failure, but correspondence-based bounds can be much stronger than Hausdorff;
+- short spans/double knots: conditioning issues only.
+
+Conclusion: no TeX stage note yet. Repair locality before claiming a stage breakthrough.
+
+### Task 3.2 — targeted Degen / nonlinear normal correspondence review
 
 **Next session only.**
 
-Do not add another positive theorem before attacking the current framework.
+Use the uploaded Degen paper and the new counterexample as the organizing question, not as a broad literature survey.
 
-### 3.1 Pure reparameterization families
-
-Study:
-- straight line: should give exact zero bound under monotone redistribution;
-- circle or another constant-curvature reference: true geometric distance zero for pure reparameterization, current bound should show explicit second-order conservatism;
-- determine scaling constants, not only big-O notation.
-
-### 3.2 Low-speed regular parameterizations
-
-Construct geometrically ordinary cubics with \(\min\|C'\|\) small but positive.
-
-Questions:
-- which rational quantities become numerically large only because of parameter speed?
-- does arc-length invariance prevent theoretical blow-up even if coefficient conditioning is poor?
-- should a practical method locally renormalize or reject near-singular spans?
-
-### 3.3 High curvature and short spans
-
-Test whether
+Study the local normal condition
 \[
-\frac K2N_{G,\parallel}^2
+(\widetilde C(t)-C(u))\cdot C'(u)=0.
 \]
-becomes useless in realistic high-curvature/tiny-span configurations.
 
-Separate genuine geometric curvature from parameterization artifacts.
+Goals:
+- recover Degen's precise normal-distance/correspondence definition and hypotheses;
+- derive local existence/uniqueness near \(u=t\) using an implicit-function/tubular-neighborhood viewpoint;
+- determine exactly which hypothesis prevents branch switching near self-approach;
+- check whether same-image reparameterizations give exact zero on the correct branch;
+- exploit cubic structure: for fixed \(t\), the normal equation is degree at most five in \(u\);
+- estimate whether branch certification and maximization over \(t\) remain substantially simpler than full Hausdorff computation.
 
-### 3.4 Near self-approach
+Success criterion:
+- a local nonlinear correspondence that fixes the remote-curvature counterexample and has a plausible certified algebraic route.
 
-The current correspondence is order preserving and therefore valid without nearest-point uniqueness. Determine whether near self-approach merely makes the bound nonoptimal or creates any actual logical failure.
+Failure criterion:
+- selecting/certifying the correct root branch is essentially the full nearest-point/Hausdorff problem.
 
-### 3.5 Separate-maxima conservatism
+Out of scope:
+- full simplification algorithm;
+- source code;
+- broad free-knot literature;
+- TeX stage note.
 
-The current bound uses
+### Task 3.3 — local curvature remainder
+
+Parked as fallback.
+
+Potential idea:
 \[
-N_{G,\perp}+\frac K2N_{G,\parallel}^2.
+\|R(s)\|\le\int_0^{|\delta(s)|}(|\delta(s)|-r)\,\kappa(s\pm r)\,dr.
 \]
-Worst normal error, worst curvature, and worst tangential error may occur at different locations.
+This restores locality but may require moving arc-length intervals/inversion. Investigate only if nonlinear normal correspondence proves too expensive.
 
-Study whether a tighter still-cheap quantity should be
-\[
-\sup_s\left(\|P_NE(s)\|+\frac12 K_{\rm local}(s)\,\delta(s)^2\right)
-\]
-or a related localized bound. Do not adopt it unless certification remains simple.
+## Phase 4 — second attack / stage decision
 
-### 3.6 Targeted literature check
+Only after Task 3.2.
 
-Search specifically for:
-- local normal graph / tubular-neighborhood error bounds for curves;
-- linearization of Fréchet or shape-space distance under reparameterization;
-- certified spline approximation error using tangent/normal decomposition;
-- any known form matching the present first-order tangential quotient.
+Attack:
+- branch ambiguity near self-approach;
+- high curvature / small reach;
+- low-speed parameterization;
+- double knots;
+- exact same-image parameter changes;
+- computational degree and root multiplicity.
 
-Purpose: identify prior art and missing hypotheses, not broad literature expansion.
-
-## Stage decision after Phase 3
-
-If the framework survives:
-- mark the first stage breakthrough;
-- write a self-contained TeX note including Green-function background, exact \(D^2\) reduction, certification theory, parameterization quotient, limitations, and a pseudocode-level certification pipeline.
+If the repaired framework survives:
+- perform targeted prior-art verification;
+- mark a stage breakthrough;
+- write the first self-contained TeX note with Green-function background and pseudocode-level certification logic.
 
 If it fails:
-- document the counterexample/failure mechanism;
-- decide whether to strengthen the nonlinear correspondence or abandon the normal-projection route.
+- record the failure mechanism and reconsider whether the project should accept synchronized/Fréchet-like error as the optimization metric with final Hausdorff certification only.
 
-## Phase 4 — simplification algorithm
+## Phase 5 — simplification algorithm
 
-Postponed until after the stage review.
+Postponed.
 
-Only then consider weighted PL simplification under
+Only after a geometry-aware bridge survives adversarial review should the project formulate weighted PL simplification under
 \[
-\kappa=K_0+2J,
+\kappa=K_0+2J.
 \]
-with delete/merge/move/free-breakpoint primitives and pseudocode before implementation.
 
 ## Parking lot
 
@@ -118,6 +118,6 @@ with delete/merge/move/free-breakpoint primitives and pseudocode before implemen
 - closed/periodic curves;
 - forcing \(C^2\) candidates;
 - sharp classical Green \(L^p\) constants;
-- stronger nonlinear correspondence yielding exact reparameterization invariance;
-- symmetric bounds using both curves as reference;
-- localized curvature remainder if the global \(K\) term proves too loose.
+- symmetric use of both curves as reference;
+- localized curvature remainder;
+- final choice between Hausdorff-only versus order-preserving geometric semantics.
