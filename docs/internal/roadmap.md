@@ -1,6 +1,6 @@
 # Short-Horizon Roadmap — Internal
 
-This file is intentionally volatile. It should describe the next few research sessions, not the whole project.
+This file is intentionally volatile. It describes only the next few research sessions. It is not a commitment to a fixed theory.
 
 ## Phase 0 — Initialization
 
@@ -16,76 +16,104 @@ Established:
 - \(D^2:S^1_3\to PL_{\rm disc}\) is onto with affine kernel;
 - two vector constraints fix reconstruction uniquely;
 - jump/kink structure of \(C''\) exactly records minimal cubic knot multiplicity;
-- weighted PL complexity \(\kappa=K+2J\) gives \(N_{\rm ctrl}=4+\kappa\) in a minimal open/clamped cubic representation.
-
-Detailed derivation: `docs/internal/derivations/d2_reconstruction.md`.
+- weighted PL complexity \(\kappa=K+2J\) gives \(N_{\rm ctrl}=4+\kappa\) for a minimal open/clamped cubic.
 
 ### Task 1.2a — Fixed-endpoint Green kernel
 
-**Next session only. Do not automatically continue into 1.2b.**
+Status: **complete (Session 0003)**.
 
-Assume error boundary conditions
+Established for
 \[
-E(a)=E(b)=0,
-\qquad E''=e.
+E''=e,\qquad E(a)=E(b)=0:
+\]
+\[
+K_D(t,s)=-\frac{(\min\{t,s\}-a)(b-\max\{t,s\})}{b-a}.
 \]
 
+Also established:
+\[
+N_G(e):=\|G_De\|_\infty
+=\|C-\widetilde C\|_{\infty,\mathrm{sync}},
+\]
+and
+\[
+d_H(\operatorname{Im}C,\operatorname{Im}\widetilde C)\le N_G(e).
+\]
+
+The kernel is one-signed and tent-shaped in the integration variable, preserving signed/vector cancellation and location information.
+
+### Task 1.2c — PL-specific exact/certified evaluation of \(N_G\)
+
+**Next session only.** This task is moved ahead of global \(L^p\) constants because Session 0003 suggests direct evaluation may be cheap enough to make those bounds secondary.
+
 Goals:
-- derive the exact kernel \(K_D(t,s)\);
-- check sign, symmetry after interval normalization, scaling with \(L=b-a\), and endpoint behavior;
-- verify that \(N_G(e)=\|Ge\|_\infty\) is exactly synchronized positional error under this gauge;
-- identify the kernel null/cancellation structure relevant to PL \(e\);
-- perform a goal-alignment review: does this representation expose a useful simplification metric, or merely rewrite the original synchronized error?
+- assume \(e\) is piecewise affine on the union partition of original/candidate breakpoints;
+- derive the polynomial form of \(E=G_De\) on each span;
+- determine the degree of the stationarity equation for scalar and vector norms;
+- identify how to include span boundaries and jumps in \(e\);
+- give a certified evaluation strategy in pseudocode-level mathematics only;
+- estimate structural complexity in the number of spans;
+- perform a goal-alignment review: is this genuinely easier than curve-to-curve Hausdorff evaluation?
 
-Success criterion: a clean, reviewed operator identity and a precise statement of what information it preserves that ordinary \(L^p\) discards.
+Success criterion:
+- a clean finite procedure for exact/certified \(N_G\) evaluation using low-degree polynomial root isolation/subdivision, with no dense sampling requirement.
 
-Failure criterion: discover that the induced quantity is algebraically correct but offers no exploitable structure on PL errors.
+Failure criterion:
+- global coupling or vector norm maximization makes certification too expensive to preserve the hoped-for advantage.
 
-### Task 1.2b — Sharp operator bounds
+Do not yet optimize breakpoint locations or design a complete simplification algorithm.
 
-Postponed until 1.2a is reviewed.
+### Task 1.2b — Sharp \(L^p\to L^\infty\) bounds
 
-Potential goals later:
-- sharp \(L^1,L^2,L^\infty\to L^\infty\) constants;
-- extremizers or near-extremizers;
-- compare looseness with direct \(N_G\) evaluation.
+Status: open but deprioritized.
 
-### Task 1.2c — PL-specific evaluation
+Return here only if needed to:
+- compare against Lyche-style norm bounds;
+- obtain cheap pruning bounds;
+- quantify how much direct \(N_G\) evaluation improves over global norms.
 
-Postponed.
+## Phase 2 — Attack ordinary Lp as a ranking metric
 
-Question: because \(e\) is piecewise linear and the kernel is piecewise linear in \(s\), can \(Ge\) be represented/evaluated exactly with low algebraic cost and can its max norm be certified without dense sampling?
-
-## Phase 2 — Demonstrate why Lp is structurally loose
-
-Status: waiting for Phase 1.2 baseline.
+Status: waiting for direct \(N_G\) evaluation.
 
 Later targets:
-- cancellation pairs;
+- cancellation pair examples;
 - short-span scaling;
-- ranking reversals between \(L^p\) and \(N_G\).
+- ranking reversals between \(L^p\) and \(N_G\);
+- decide whether an intermediate cheap surrogate is actually needed.
 
-## Phase 3 — First-order treatment of parametrization
-
-Status: postponed.
-
-Do not enter until the synchronized metric is understood and reviewed against the original CAD objective.
-
-## Phase 4 — Local geometric comparison
+## Phase 3 — Parametrization
 
 Status: postponed.
 
-## Phase 5 — Algorithmic consequences
+Only enter after the synchronized metric is both mathematically understood and computationally viable.
+
+Possible directions remain open; do not assume normal projection is the only route.
+
+## Phase 4 — Geometry-aware comparison / certification
 
 Status: postponed.
 
-If theory survives, write pseudocode only before any numerical test. No source code unless explicitly requested.
+The final CAD criterion remains geometric. Potential routes may involve normal correspondence, Fréchet-like order-preserving correspondence, reach/tubular neighborhoods, or something not yet identified.
 
-## Side branch parking lot
+## Phase 5 — Simplification algorithm
 
-- optimize the affine reconstruction mode instead of fixing endpoints;
-- impose continuity on \(q\) to force a \(C^2\) simplified cubic;
-- treat closed/periodic curves with compatibility constraints;
-- parameter normalization or geometric gauge choices.
+Status: postponed.
 
-These are intentionally parked so they do not dilute the next session.
+If the metric theory survives:
+- formulate breakpoint removal/merge/move primitives;
+- write pseudocode before any implementation;
+- use numerical tests primarily to falsify or measure sharpness.
+
+No source code unless explicitly requested.
+
+## Side-branch parking lot
+
+- optimized affine reconstruction instead of fixed endpoints;
+- force continuity of \(q\) to obtain \(C^2\) candidates;
+- closed/periodic curves and compatibility constraints;
+- parameter normalization / alternative gauges;
+- sharp global operator constants;
+- potential convex formulations for fixed candidate partitions.
+
+These are deliberately parked to keep each research session narrow.

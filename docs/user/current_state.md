@@ -2,105 +2,129 @@
 
 ## Scope of the current side project
 
-The present research branch is intentionally restricted to **\(C^1\), cubic, non-rational spline curves**. The broader spline-simplification problem (degree reduction, arbitrary multiplicities, rational curves, surfaces, topology, etc.) is postponed.
+The present research branch remains restricted to **\(C^1\), cubic, non-rational spline curves**. The broader spline-simplification problem is intentionally postponed.
 
-The motivating transformation is
-
+The basic transformation is
 \[
-C \xrightarrow{D^2} q=C'',
+C\xrightarrow{D^2}q=C'',
 \]
+where \(q\) is piecewise linear, possibly discontinuous at double knots. The strategy is to simplify \(q\), then reconstruct a cubic candidate.
 
-where \(q\) is piecewise linear, possibly discontinuous at double knots. The plan is to seek low-complexity approximations of \(q\), then integrate twice back to a cubic spline candidate.
+The central long-term question is still the error measure: it should exploit the simple PL structure, be tighter than ordinary \(L^p\) surrogates, and eventually move closer to geometric/Hausdorff error without becoming equally difficult.
 
-The central unresolved question remains the error measure in the \(C''\)-domain: it should be tighter and more geometry-aware than ordinary \(L^p\) norms while remaining much easier to optimize than direct Hausdorff distance.
+---
 
-## Stable result from Session 0002: the D2 reduction is exact
+## Stable result 1 — the D2 reduction is exact
 
-Let \(S^1_3\) denote \(C^1\) piecewise-cubic curves on a fixed partition, and let \(PL_{\rm disc}\) denote piecewise-affine vector functions with possible jumps at the breakpoints. Then
-
+Let \(S^1_3\) denote \(C^1\) piecewise-cubic curves and \(PL_{\rm disc}\) piecewise-affine vector functions with possible jumps. Then
 \[
 D^2:S^1_3\to PL_{\rm disc}
 \]
-
-is surjective and
-
+is surjective with
 \[
-\ker D^2=\mathcal P_1,
+\ker D^2=\mathcal P_1.
 \]
-
-the affine functions of the parameter. Equivalently,
-
+Thus
 \[
 S^1_3/\mathcal P_1\cong PL_{\rm disc}.
 \]
 
-Thus the proposed second-derivative route is algebraically closed: every admissible PL second derivative integrates back to a \(C^1\) cubic once two vector integration constants are fixed.
+The singularity type of \(q=C''\) exactly records minimal cubic knot multiplicity:
+- jump in \(q\) -> double knot;
+- continuous kink -> simple knot;
+- neither -> redundant breakpoint.
 
-### Exact knot / breakpoint dictionary
-
-For an interior point \(x_i\), let \(q=C''\).
-
-- If \([q]_i\neq0\), then \(C\) is \(C^1\) but not \(C^2\): a minimal cubic representation needs a **double knot**.
-- If \([q]_i=0\) but \([q']_i\neq0\), then \(C\) is \(C^2\) but not \(C^3\): a minimal cubic representation needs a **simple knot**.
-- If both jumps vanish, the two cubic pieces are restrictions of one cubic polynomial: the breakpoint is representation-redundant.
-
-If \(K\) is the number of continuous kinks of \(q\) and \(J\) the number of jumps, define
-
+If \(K\) is the number of continuous kinks and \(J\) the number of jumps,
 \[
-\kappa(q)=K+2J.
+\kappa(q)=K+2J,
+\qquad
+N_{\rm ctrl}=4+\kappa(q)
+\]
+for a minimal open/clamped cubic representation.
+
+This means simplification in the second-derivative domain is not merely a visual polyline analogy: at fixed cubic degree it carries the representation complexity exactly.
+
+---
+
+## Stable result 2 — fixed-endpoint error has an exact Green representation
+
+The current default gauge preserves both endpoint positions. Let
+\[
+E=C-\widetilde C,
+\qquad e=C''-\widetilde C'',
+\]
+with
+\[
+E(a)=E(b)=0.
+\]
+Then
+\[
+E(t)=G_De(t)=\int_a^b K_D(t,s)e(s)\,ds,
+\]
+where
+\[
+\boxed{
+K_D(t,s)=
+-\frac{(\min\{t,s\}-a)(b-\max\{t,s\})}{b-a}.
+}
 \]
 
-For a minimal open/clamped cubic B-spline representation,
+The kernel is symmetric, one-signed in the interior, vanishes at the endpoints, and scales correctly under interval rescaling.
 
+Define
 \[
-N_{\rm ctrl}=4+\kappa(q).
+N_G(e):=\|G_De\|_\infty.
 \]
+Then under this endpoint-preserving reconstruction,
+\[
+\boxed{
+N_G(e)=\|C-\widetilde C\|_{\infty,\text{synchronized parameter}}.
+}
+\]
+Moreover,
+\[
+\boxed{
+d_H(\operatorname{Im}C,\operatorname{Im}\widetilde C)
+\le N_G(e).
+}
+\]
+So the Green-induced quantity is still parameterization-sensitive, but it is already a rigorous geometric upper bound.
 
-So, at fixed cubic degree within the \(C^1\) class, reducing minimal knot multiplicity/control-point count is exactly equivalent to reducing this weighted PL singularity complexity. This is stronger than the informal statement that “knots become polyline breakpoints.”
+### Why this is potentially better than measuring \(e\) with one global \(L^p\) number
 
-A detailed derivation is stored in `docs/internal/derivations/d2_reconstruction.md`.
+For fixed \(t\), \(-K_D(t,s)\) is a positive piecewise-linear tent weight. Therefore the integral retains:
+- sign and vector cancellation in \(e\);
+- where the error occurs along the parameter interval;
+- the global effect of forcing the reconstructed curve to hit both endpoints.
 
-## Important caveat exposed by the proof
+A global \(L^p\) norm compresses much of this information before integration.
 
-The map \(D^2\) kills a two-vector-dimensional affine part. Therefore an error metric on \(q\) is meaningless for positional control until this affine kernel is fixed or optimized.
+This does **not** yet prove that \(N_G\) is the final desired metric, and it does not solve bad parametrization.
 
-Two useful reconstruction gauges are:
+---
 
-- fix \(C(a)\) and \(C'(a)\);
-- fix both endpoint positions \(C(a),C(b)\).
+## Current assessment
 
-For CAD/B-Rep use, preserving both endpoints is currently the preferred default. A third possibility—optimizing the affine correction after approximating \(q\)—may later be useful when endpoints need not be preserved.
+The route is stronger after the first two theory sessions than at the start:
 
-## What remains structurally clear
+1. **complexity** is exact in the \(C''\) domain;
+2. **synchronized positional error** is also exact there through an explicit linear operator;
+3. the same quantity gives a safe Hausdorff upper bound.
 
-1. **Integration is the right place to measure positional effect.**  
-   If \(e=C''-\widetilde C''\), then after fixing a reconstruction gauge the positional error \(E=C-\widetilde C\) is obtained by a second-order Green operator:
-   \[
-   E=Ge.
-   \]
+The next risk is practical rather than algebraic: perhaps evaluating or optimizing \(N_G\) is still too expensive.
 
-2. **Ordinary \(L^p\) norms are likely not the final optimization metric.**  
-   They discard sign/direction/cancellation information before integration. They may remain useful as comparison or certification bounds.
+A promising structural fact is that when \(e\) is piecewise linear, \(G_De\) is piecewise cubic. This suggests that its maximum norm might be certified by low-degree polynomial extremum calculations instead of dense sampling or curve-to-curve nearest-point search.
 
-3. **A purely parametrized norm cannot solve the geometric problem by itself.**  
-   Two geometrically identical curves with different parametrizations can have different second derivatives. Improving bad parametrization will eventually require a correspondence/reparametrization step or a controlled quotient of tangential effects.
+That is the next narrow research target.
 
-4. **Promising intermediate objects remain:**
-   - the Green-induced synchronized quantity \(\|Ge\|_\infty\);
-   - normal-projected positional error \(\|P_NGe\|_\infty\);
-   - nonlinear normal correspondence in the spirit of Degen;
-   - Fréchet-type order-preserving correspondence as a conceptual upper layer.
+---
 
-## Current research frontier
+## What is deliberately not claimed
 
-The next session will remain narrow: use the **two-endpoint reconstruction gauge** and derive its exact Green kernel and induced synchronized positional error. Only after this baseline is reviewed will the project return to cancellation, \(L^p\) comparison, or parametrization.
+- No claim that \(N_G\) is parameterization-invariant.
+- No claim yet that it ranks simplification candidates better than every \(L^p\) norm.
+- No normal-projection or Fréchet theory has been established.
+- No complete simplification algorithm exists yet.
+- No code test is currently required.
 
-## What has not yet been established
-
-- whether a Green-induced metric materially outperforms \(L^p\) in candidate ranking;
-- whether a normal-projected Green quantity admits a useful certified Hausdorff upper bound;
-- how large the higher-order/tangential remainder is after removing first-order reparametrization effects;
-- whether the final metric remains stable on very short knot spans;
-- whether geometry-aware treatment destroys the computational advantage of the PL representation.
-
-No TeX stage note has been created yet: the current result is foundational and useful, but still too elementary and too far from the geometric-error breakthrough to justify one.
+No TeX stage note has been created: the results are coherent foundations, but the geometry-aware breakthrough has not yet happened.

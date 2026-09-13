@@ -11,117 +11,146 @@ The current side project is deliberately narrower than the full spline-simplific
 
 > **Starting from a \(C^1\) cubic non-rational spline \(C\), use the fact that \(C''\) is piecewise linear to reformulate simplification as a low-complexity approximation problem in the second-derivative domain, while developing an error measure that is tighter and more geometry-aware than ordinary \(L^p\) norms but substantially easier to handle than the Hausdorff distance.**
 
-This line of work runs in parallel with the user's close reading of the Lyche--Mørken series. It should therefore progress independently and preserve enough context that the user can join later without reconstructing the entire history from chat logs.
+This line of work runs in parallel with the user's close reading of the Lyche--Mørken series. It should therefore progress independently and preserve enough context that the user can join later without reconstructing chat history.
 
 ---
 
-## 2. Two documentation layers
+## 2. Documentation layers
 
-The repository intentionally separates two kinds of documents.
-
-### A. Research-control documents (primarily for the assistant)
-
-These documents are operational. They preserve context between conversations and prevent repeated work.
+### A. Internal research-control documents
 
 Location: `docs/internal/`
 
-They contain:
+These are primarily for research continuation by the assistant. They contain:
 - the current research frontier;
 - hypotheses under attack;
 - failed approaches and counterexamples;
 - the next small batch of tasks;
-- iteration rules;
-- requests for literature or outside help;
-- session logs.
+- derivations;
+- session logs;
+- requests for literature or code tests.
 
-The user is not expected to read these.
+The user is not expected to read them routinely.
 
 ### B. User-facing research documents
 
 Location: `docs/user/`
 
-These documents are designed so that the user can quickly re-enter the project after spending time elsewhere. They contain:
-- the stable problem statement;
+These are intended to let the user rejoin quickly. They contain:
+- stable problem statements;
 - established results;
-- major failed directions that should not be repeated;
-- the current research map;
-- concise progress summaries;
-- later, complete TeX notes for genuine stage-level breakthroughs.
+- important negative conclusions;
+- current interpretation;
+- high-level research map;
+- later, full TeX notes for stage-level breakthroughs.
 
-The user-facing layer should remain much cleaner than the internal logs.
+### C. Meta-research workflow document
+
+Location: `docs/meta/research_workflow.md`
+
+This records lessons from using the project as a pilot for assistant-led research: session sizing, review standards, handoff quality, commit discipline, and failure modes. It is independent of the spline mathematics and should only be updated when there is a real methodological lesson.
 
 ---
 
 ## 3. Research principles
 
-1. **Do not optimize for speed.** A failed definition that is thoroughly killed is useful progress.
-2. **Separate theorem, conjecture, heuristic, and experiment.** Never silently upgrade one into another.
-3. **Actively search for counterexamples.** In particular: bad parametrization, very short knot spans, cancellation after integration, nearly singular geometry, and correspondence failure.
-4. **Use computation only at the right stage.** When theory reaches a point that needs numerical testing, first write clear pseudocode and test logic. Do not implement source code in this research repository unless the user later explicitly requests it.
-5. **Markdown by default.** Most research notes and logs should be `.md`.
-6. **TeX only for genuine stage-level results.** When a result becomes coherent enough to deserve a self-contained mathematical note, write it in `.tex`, with sufficient background that the user can read it without having followed all previous assistant-only work.
-7. **Record failures.** A discarded definition, false conjecture, or unacceptably loose bound should be documented before moving on.
-8. **Prefer small, falsifiable research steps.** Each session should advance one or two concrete questions instead of attempting a full theory at once.
-9. **Do not confuse parametrized error with geometric error.** Any norm on \(C-\tilde C\) or \(C''-\tilde C''\) must be explicitly interpreted with respect to parametrization.
-10. **Hausdorff distance remains the final geometric reference, not necessarily the optimization metric.**
+1. **Do not optimize for speed.** A thoroughly killed definition is useful progress.
+2. **Keep sessions narrow.** Each substantive conversation should have one relatively clear target, explicit success/failure criteria, and explicit out-of-scope topics.
+3. **Separate theorem, conjecture, heuristic, and experiment.**
+4. **Actively search for counterexamples.** Especially bad parametrization, tiny knot spans, cancellation, near-singular geometry, and correspondence failure.
+5. **Review every theoretical advance.** Check correctness, alignment with the original CAD goal, and computational consequences.
+6. **Use computation only at the right stage.** First write pseudocode/test logic; no source code unless explicitly requested.
+7. **Markdown by default.**
+8. **TeX only for genuine stage-level results.** TeX notes must be self-contained enough for the user to read without internal logs.
+9. **Record failures and pivots.** Do not erase dead ends that future sessions might rediscover.
+10. **Do not confuse synchronized parameter error with geometric error.**
+11. **Hausdorff remains the final geometric reference, not necessarily the optimization metric.**
+12. **Keep the roadmap flexible.** A later session may reorder or abandon earlier planned directions when evidence changes.
 
 ---
 
-## 4. Current research state
+## 4. Current stable mathematical state
 
-### Stable observations
+Two exact reductions are now established for the endpoint-preserving cubic \(C^1\) setting.
 
-For a \(C^1\) cubic non-rational spline \(C:[a,b]\to\mathbb R^d\):
+### Representation complexity
 
-- \(C''\) is piecewise linear, possibly discontinuous at double knots;
-- if a candidate second derivative \(\tilde q\) is chosen and suitable boundary data are supplied, integrating twice produces a piecewise cubic candidate \(\tilde C\);
-- therefore knot simplification of \(C\) can potentially be reframed as simplification of a piecewise-linear object;
-- for fixed endpoint conditions, the map from second-derivative error to positional error is a linear Green operator;
-- ordinary \(L^p\) norms discard cancellation and spatial influence too early and may therefore be substantially looser than necessary;
-- a purely parametrization-dependent norm cannot by itself be equivalent to Hausdorff distance;
-- promising intermediate ideas include Green-induced norms, normal-projected Green error, and geometry-aware correspondences inspired by normal-distance constructions.
+For \(q=C''\), jumps of \(q\) correspond to double cubic knots, continuous kinks correspond to simple knots, and nonsingular breakpoints are redundant. Thus weighted singularity complexity of the PL second derivative exactly records minimal fixed-degree cubic representation complexity.
 
-### Main open question
+### Error transport
 
-Find an error quantity on the second-derivative side that satisfies as many of the following as possible:
+Let
+\[
+E=C-\widetilde C,\qquad e=C''-\widetilde C'',
+\qquad E(a)=E(b)=0.
+\]
+Then
+\[
+E=G_De
+\]
+with the explicit fixed-endpoint Green kernel
+\[
+K_D(t,s)=
+-\frac{(\min\{t,s\}-a)(b-\max\{t,s\})}{b-a}.
+\]
+Therefore
+\[
+N_G(e)=\|G_De\|_\infty
+\]
+is exactly the synchronized positional error under this gauge and satisfies
+\[
+d_H(\operatorname{Im}C,\operatorname{Im}\widetilde C)\le N_G(e).
+\]
 
-1. computable on piecewise-linear data;
-2. significantly tighter than ordinary \(L^p\) estimates;
-3. stable enough for engineering use;
-4. partially insensitive to bad parametrization;
-5. strong enough to control or closely track geometric error;
-6. structured enough to support low-complexity approximation algorithms.
+The next target is not another abstract norm theorem. It is to determine how cheaply and rigorously \(N_G\) can be evaluated when \(e\) is piecewise linear.
 
 ---
 
 ## 5. How to resume this project in a new chat
 
-If chat context is lost or a new conversation is opened, proceed in this order:
+If chat context is lost, proceed in this order:
 
 1. Read this `README.md`.
-2. Read `docs/user/current_state.md` for the user-facing stable picture.
-3. Read `docs/internal/frontier.md` for the exact current research frontier.
+2. Read `docs/user/current_state.md`.
+3. Read `docs/internal/frontier.md`.
 4. Read the newest file in `docs/internal/logs/`.
-5. Read `docs/internal/roadmap.md` before choosing the next task.
-6. Continue only one small batch of work at a time.
-7. At the end of every substantial research session:
-   - update `docs/internal/frontier.md`;
-   - append a new session log;
-   - update `docs/internal/roadmap.md` if priorities changed;
-   - update `docs/user/current_state.md` only if something stable changed;
-   - create/update a TeX note only if a real stage-level result has emerged.
+5. Read `docs/internal/roadmap.md`.
+6. Choose only the next narrow research batch.
+7. At the end of the session, update only documents whose state changed and commit them as one logical session-level commit whenever practical.
 
 This repository, not chat memory, is the canonical state of this side project.
 
 ---
 
-## 6. Current document map
+## 6. Commit policy
 
-- `docs/user/current_state.md` -- clean state summary for the user.
-- `docs/user/research_map.md` -- evolving high-level map of the research program.
-- `docs/internal/frontier.md` -- exact current questions, hypotheses, and risks.
-- `docs/internal/roadmap.md` -- short-horizon task plan; expected to change frequently.
-- `docs/internal/protocol.md` -- research iteration protocol and documentation rules.
-- `docs/internal/logs/2026-09-13_session-0001.md` -- first session initialization log.
+Preferred rule:
 
-Future stage-level mathematical notes should go under `notes/` as `.tex` files.
+> **One substantive research conversation -> one logical commit.**
+
+A session commit should bundle the mathematical derivation, log, frontier/roadmap changes, stable user-facing updates, and occasional meta-workflow changes caused by that session.
+
+The commit message should summarize the intellectual change, not merely list filenames.
+
+Small isolated fixes may remain separate.
+
+---
+
+## 7. Current document map
+
+### User-facing
+- `docs/user/current_state.md` — clean current state.
+- `docs/user/research_map.md` — evolving high-level map.
+
+### Internal
+- `docs/internal/frontier.md` — exact current frontier, theorem status, risks.
+- `docs/internal/roadmap.md` — short-horizon research plan.
+- `docs/internal/protocol.md` — iteration/review/documentation rules.
+- `docs/internal/derivations/d2_reconstruction.md` — exact \(D^2\) reduction and complexity dictionary.
+- `docs/internal/derivations/fixed_endpoint_green.md` — fixed-endpoint Green operator and error interpretation.
+- `docs/internal/logs/` — one log per substantive research conversation.
+
+### Meta
+- `docs/meta/research_workflow.md` — pilot reflections on assistant-led research.
+
+Future stage-level mathematical notes belong under `notes/` as `.tex` files.

@@ -4,7 +4,9 @@
 
 This file governs how the assistant should continue the research across multiple chats without relying on chat history as the primary memory.
 
-The project is an **open research program**, not a fixed syllabus. Any roadmap is provisional. A good session may prove a theorem, kill a conjecture, expose a hidden assumption, or merely sharpen the next question.
+The process is deliberately experimental. If it becomes bureaucratic or stops helping research quality, change it.
+
+---
 
 ## At the start of every research session
 
@@ -12,147 +14,183 @@ The project is an **open research program**, not a fixed syllabus. Any roadmap i
 2. Read `docs/internal/frontier.md`.
 3. Read `docs/internal/roadmap.md`.
 4. Read the most recent session log.
-5. Check whether the user has added new constraints, literature, or conclusions elsewhere in the project.
-6. Pick a **small research batch** with a clear target. Prefer one theorem attempt, one counterexample program, or one sharply defined comparison.
-7. State internally what would count as success, failure, or an informative partial result for that session.
+5. Check whether the user has added new constraints, literature, or conclusions.
+6. Pick a **small research batch**: ideally one theorem attempt, one counterexample program, or one sharply defined comparison.
+7. State what is explicitly **out of scope** for this session.
 
-Do not restart broad literature review unless the current question specifically requires it. Do not attempt to complete several roadmap phases in one conversation simply because they are available.
+Do not restart broad literature review unless a specific question requires it.
 
-## During the session
+---
 
-Maintain four epistemic labels:
+## Epistemic labels
 
-- **Established** — proved in-session or directly supported by a cited source.
+Maintain four labels internally:
+
+- **Established** — proved/reviewed in-session or directly supported by a reliable source.
 - **Plausible** — coherent but not yet proved.
-- **Heuristic** — useful intuition only.
+- **Heuristic** — intuition or design hypothesis only.
 - **Rejected** — false, structurally unhelpful, or too loose for the intended purpose.
 
-When a claim looks strong, actively try to break it before promoting it.
+When a claim looks strong, actively try to break it before promotion.
 
-Record useful side-effects of the work: a proof may expose a new modeling choice, a counterexample may suggest a better metric, or a failed path may narrow the search space. These are legitimate outcomes and should inform the next session.
+---
 
 ## Theory workflow
 
 For each candidate theorem or definition:
 
-1. State assumptions precisely.
-2. Reduce to the lowest-dimensional/simple case possible.
-3. Test degenerate cases.
-4. Search for a counterexample.
-5. Derive the claim.
-6. Check units/scaling.
-7. Check reparametrization sensitivity.
-8. Check very short knot spans.
-9. If geometry is involved, check normal-correspondence uniqueness and near self-approach.
-10. Perform a **goal-alignment review** before preserving the result:
-   - Is the statement actually correct?
-   - Does it move the original CAD simplification problem forward?
-   - Has the work drifted into an elegant but irrelevant inference game?
-   - Is the result useful because it changes modeling, certification, complexity, or algorithm design, or is it merely mathematically decorative?
-11. Only then decide whether the result is stable enough to preserve.
+1. state assumptions precisely;
+2. reduce to the simplest nontrivial case;
+3. check signs, units, and scaling;
+4. test degenerate/boundary cases;
+5. search for a counterexample;
+6. derive the claim;
+7. distinguish exact identity, one-sided bound, asymptotic result, and heuristic;
+8. check short knot spans / singular limits when relevant;
+9. check parametrization sensitivity when geometry is involved;
+10. decide whether the result is useful, not only correct.
+
+A polished derivation is not evidence of truth.
+
+---
+
+## Mandatory end-of-theory review
+
+Every session with a theoretical result must include three reviews.
+
+### Correctness review
+
+Ask whether the statement is actually proved under its stated assumptions and whether simple counterexamples were checked.
+
+### Goal-alignment review
+
+Ask whether the work still advances the original goal: tolerance-constrained simplification of CAD splines. Explicitly flag elegant mathematics that does not help the target problem.
+
+### Complexity review
+
+If a new metric/operator is proposed, ask what it costs to evaluate or optimize. A surrogate that becomes as difficult as direct Hausdorff/Fréchet computation may defeat the project purpose.
+
+---
 
 ## Literature workflow
 
-Use literature for one of three reasons only:
+Use literature for one of three reasons:
 
-- identify whether the object/result is already known;
+- identify whether an emerging object/result is already known;
 - import a theorem needed for the next proof;
 - compare the emerging framework against a mature alternative.
 
-Avoid uncontrolled scope expansion. Shape analysis, elastic metrics, Sobolev metrics, Fréchet distance, reach theory, etc. should only be opened when a specific internal question points there.
+Avoid scope expansion for its own sake. Shape spaces, elastic metrics, reach theory, Fréchet distance, etc. should only be opened when a concrete internal question points there.
 
-If a critical paper is unavailable, log:
-- exact title/authors/year if known;
+If a critical source is unavailable, log:
+- title/authors/year if known;
 - why it matters;
-- what theorem or definition is needed from it;
-- whether the user should be asked to obtain it.
+- what result is needed;
+- whether the user should obtain it.
+
+---
 
 ## Computation workflow
 
-Numerical work is allowed only after a clear theoretical question is stated.
+Numerical work begins only after a clear theoretical question is stated.
 
 Before any implementation, write:
 - input;
 - output;
 - invariant/quantity being tested;
 - pseudocode;
-- expected scaling or theorem prediction;
+- expected scaling/theorem prediction;
 - falsification criterion.
 
 Do not write production source code unless the user explicitly asks.
 
-Computation may:
-- kill a conjecture;
-- expose a hidden parameter dependence;
-- estimate sharpness;
-- compare rankings of candidate metrics.
+Computation may kill a conjecture, expose hidden dependence, estimate sharpness, or compare candidate rankings. It does not substitute for proof when a certified theorem is claimed.
 
-Computation may **not** substitute for proof when a certified theorem is claimed.
+---
 
 ## Documentation rules
 
 ### Internal layer
 
-Update after each substantial session:
-- `frontier.md` — only if the frontier changed;
-- `roadmap.md` — if next priorities changed;
-- `logs/YYYY-MM-DD_session-XXXX.md` — always append a new log.
+Update only documents whose state genuinely changed:
+- `frontier.md` — current exact questions/results;
+- `roadmap.md` — short-horizon priorities;
+- `logs/YYYY-MM-DD_session-XXXX.md` — always create one per substantive research conversation;
+- derivations/counterexamples as needed.
 
-Internal logs should include:
-- objective;
-- success/failure criteria;
-- work performed;
-- successful results;
-- failed attempts;
-- unexpected ideas exposed during the work;
-- goal-alignment review;
-- current confidence;
+A session log should record:
+- objective and out-of-scope items;
+- main result or failure;
+- unexpected idea;
+- correctness/goal/complexity review;
+- confidence;
 - exact next action;
-- whether user input/literature is needed.
+- whether user/literature/code help is needed.
+
+Do not duplicate a long derivation in the log if it already has its own file.
 
 ### User-facing layer
 
 Update `docs/user/current_state.md` only for stable changes.
 
-Update `docs/user/research_map.md` when the global direction changes.
+Update `docs/user/research_map.md` only when the global map changes materially.
 
 Do not flood user-facing docs with transient calculations.
 
 ### TeX notes
 
-Create a TeX note under `notes/` only if there is a stage-level result worth reading independently.
+Create a TeX note under `notes/` only for a real stage-level result. It must be self-contained enough that the user need not read internal logs.
 
-A TeX note should contain:
-- motivation;
-- precise setting;
-- relevant background;
-- definitions;
-- lemmas/theorems with proofs;
-- counterexamples/limitations;
-- algorithmic consequence if any;
-- open questions.
+---
 
-It should not assume the user has read the internal logs.
+## Commit discipline
+
+Preferred policy:
+
+> **One substantive research conversation -> one logical Git commit whenever practical.**
+
+Bundle the session's derivation, log, frontier/roadmap changes, stable user-facing updates, and any relevant meta-process update into the same commit.
+
+The commit message should have:
+- a concise session/result title;
+- a short summary of the intellectual change and next direction.
+
+Avoid one-file-per-commit noise unless a technical recovery or isolated fix requires it.
+
+This makes `git log` a coarse research history.
+
+---
+
+## Meta-workflow reflection
+
+`docs/meta/research_workflow.md` records lessons about assistant-led research itself.
+
+Do **not** update it every session. Update only when:
+- a workflow rule proves useful/useless;
+- a recurring failure mode appears;
+- handoff/recovery quality changes;
+- the user or assistant identifies a practice worth carrying into future research projects.
+
+---
 
 ## End-of-session report to the user
 
-Keep the chat summary short and decision-oriented:
-
+Keep the chat summary decision-oriented:
 - what was attacked;
 - what succeeded;
-- what failed;
-- what new idea, if any, emerged;
-- whether the result still aligns with the original goal;
+- what failed or remained unresolved;
 - whether the main direction looks stronger/weaker;
-- what will be attempted next;
-- whether any literature or user help is needed.
+- what the next narrow target is;
+- whether literature/user/code help is needed.
 
-Explicitly flag any of the following:
-- **THEORETICAL FAILURE** — a major candidate direction is dead;
-- **STAGE BREAKTHROUGH** — a result is strong enough to justify a TeX note;
-- **CODE TEST NEEDED** — theory reached a point where numerical falsification/validation is the correct next step;
-- **LITERATURE NEEDED** — progress is blocked on a source not currently available.
+Explicitly flag:
+- **THEORETICAL FAILURE**
+- **STAGE BREAKTHROUGH**
+- **CODE TEST NEEDED**
+- **LITERATURE NEEDED**
+
+when applicable.
 
 ## Research integrity rule
 
-A polished derivation is not evidence of truth. The goal is to reduce uncertainty, not to maximize the apparent completeness of the documentation.
+The goal is to reduce uncertainty, not to maximize the apparent completeness of the documentation.
