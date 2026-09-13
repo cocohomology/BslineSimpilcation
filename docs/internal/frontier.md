@@ -23,117 +23,114 @@ E=G_De,\qquad N_G=\|E\|_\infty,
 \]
 and \(d_H\le N_G\). For PL \(e\), \(N_G\) is fixed-degree certifiable.
 
-### F3 — normal displacement is the first-order geometric residual
-The Session-0005 arc-length shift removes tangential synchronized error to first order. Session 0008 now identifies this shift as the first Newton/IFT linearization of the nonlinear normal-projection equation.
+### F3 — first-order geometry
+Tangential synchronized displacement is the linearized reparameterization direction; normal displacement is the first-order geometric residual. The former Session-0005 shift is now understood as the first Newton/IFT step for the nonlinear normal equation.
 
-### F4 — first geometry-aware global-curvature product rejected
-The expression
+### F4 — global-curvature closure is only a boundary result
+The bound
 \[
 N_{G,\perp}+\frac K2N_{G,\parallel}^2
 \]
-is correct but can be arbitrarily conservative because curvature may be large far from the support of tangential error. The failure is globalization of geometry, not the local tangent/normal decomposition.
+is correct but can be arbitrarily conservative because remote curvature can pollute a local tangential shift. Keep this as a known capability boundary, not a problem that must be repaired universally.
 
-## New structural lesson from Degen — admissibility before the norm
-
-Degen's useful lesson for this project is methodological. His construction proceeds in the order
+### F5 — Degen lesson: correspondence before norm
+Degen's useful architecture is
 \[
-\boxed{
-\text{normal neighbourhood}
-\to\text{admissible class}
+\text{admissible normal neighbourhood}
 \to\text{unique correspondence}
-\to\text{deviation field}
-\to\text{sup norm}
-\to\text{Hausdorff relation}.
-}
+\to\text{deviation function}
+\to\text{sup norm}.
 \]
-
-This suggests that our next metric should not be guessed directly as another norm of \(E\). We should first build a certified geometric coordinate chart for nearby candidates.
-
-Detailed analysis: `docs/internal/derivations/degen_admissibility_lesson.md`.
-
-## Current main object — nonlinear normal branch
-
-Define
+For our space-curve setting, use
 \[
-F(t,u):=(\widetilde C(t)-C(u))\cdot C'(u).
+F(t,u)=(\widetilde C(t)-C(u))\cdot C'(u).
 \]
-Seek a local branch \(u=\sigma(t)\) satisfying
-\[
-F(t,\sigma(t))=0.
-\]
-For fixed \(t\) and cubic reference span, \(\deg_u F\le5\).
+A normal branch satisfies \(F(t,\sigma(t))=0\).
 
-At a normal root, with \(r=\widetilde C(t)-C(u)\),
-\[
-F_u=-\|C'(u)\|^2+r\cdot C''(u).
-\]
-Hence a natural local nondegeneracy condition is
-\[
-\boxed{\|C'(u)\|^2-r\cdot C''(u)>0.}
-\]
-In arc length this becomes \(1-r\cdot\kappa_{\rm vec}>0\), and \(\|r\|\kappa<1\) is a simple sufficient condition.
+### F6 — local cubic span-box admissibility certificate (Session 0009)
 
-The branch derivative is
+On a candidate/reference parameter box
+\[
+T=[t_0,t_1],\qquad U=[u_0,u_1],
+\]
+assume
+\[
+F(t,u_0)>0,\qquad F(t,u_1)<0
+\]
+for all \(t\in T\), and
+\[
+F_u(t,u)<0
+\]
+throughout \(T\times U\).
+
+Then for every \(t\in T\) there is exactly one root \(u=\sigma(t)\in U\). It is the unique minimizer of
+\[
+\Phi(t,u)=\|\widetilde C(t)-C(u)\|^2
+\]
+over that local reference window. If additionally
+\[
+F_t(t,u)=\widetilde C'(t)\cdot C'(u)>0
+\]
+on the box, then \(\sigma'(t)>0\), so the branch is orientation preserving.
+
+For cubic spans the relevant polynomial bidegrees are fixed:
+\[
+\deg F\le(3,5),\quad
+\deg F_u\le(3,4),\quad
+\deg F_t\le(2,2).
+\]
+Thus admissibility can be certified by local Bernstein/interval sign tests rather than global normal-root enumeration.
+
+Detailed derivation: `docs/internal/derivations/local_normal_branch_certificate.md`.
+
+## Green predictor refinement
+
+At the synchronized point \(u=t\), with
+\[
+B=E\cdot C',\qquad S=\|C'\|^2,
+\]
+we have
+\[
+F(t,t)=-B,
+\qquad
+F_u(t,t)=-(S+E\cdot C'').
+\]
+Hence the exact one-step Newton predictor is
 \[
 \boxed{
-\sigma'(t)=
-\frac{\widetilde C'(t)\cdot C'(\sigma(t))}
-{\|C'(\sigma(t))\|^2-r\cdot C''(\sigma(t))}.
+\sigma_N(t)=t-\frac{B}{S+E\cdot C''}.
 }
 \]
-Thus normal-coordinate degeneracy and orientation loss are separate conditions.
+The earlier predictor \(t-B/S\) is its first-order approximation.
 
-## Major synthesis with previous work
+The predictor is not a proof; it is used only to keep the candidate box \(U\) local.
 
-At the synchronized guess \(u=t\), one Newton/IFT correction gives
-\[
-\boxed{
-\sigma(t)-t\approx-
-\frac{E(t)\cdot C'(t)}{\|C'(t)\|^2}.
-}
-\]
-This is exactly the Session-0005 tangential shift in native parameter.
+## What Session 0009 deliberately did not solve
 
-Therefore the earlier first-order theory is retained as the linearization/predictor for the nonlinear normal branch rather than being discarded after the counterexample.
+- no proof that the local normal foot is the global nearest point on the entire reference curve;
+- no exact maximization of nonlinear normal deviation along the implicit branch;
+- no global reach/tubular-neighbourhood computation;
+- no universal handling of self-approach.
 
-## Normal-graph target class
+This is intentional. The certificate is designed as a **fast path for ordinary close curves**, not a universal replacement for Hausdorff computation.
 
-If the candidate can be written as a one-to-one normal graph
-\[
-\widetilde C(\tau(u))=C(u)+r(u),\qquad r(u)\perp C'(u),
-\]
-and each matched \(C(u)\) is the unique nearest point on the reference, then
-\[
-\boxed{d_H(C,\widetilde C)=\|r\|_\infty.}
-\]
-Once admissibility is established, the sup norm of the deviation is exact rather than a global conservative surrogate.
+## Reality / engineering interpretation
 
-## Revised role of the Green layer
+A practical candidate simplification is expected to remain close to the original. In that regime:
 
-The Green layer remains central but changes role:
-- exact representation/synchronized error;
-- cheap early bound;
-- predictor \(\sigma_0=t-(E\cdot C')/\|C'\|^2\);
-- potential source of a local root interval and admissibility certificate.
+1. Green gives an exact synchronized displacement and a cheap branch predictor;
+2. a narrow reference window \(U\) is chosen around that predictor;
+3. fixed-degree sign tests certify a unique local normal branch;
+4. if the certificate fails, the algorithm falls back to synchronized error, subdivision, or a more general verifier.
 
-The nonlinear normal metric is not yet known to be computationally cheap.
+Failure of the certificate is not failure of the approximation.
 
-## Current main risk
+## Current decision gate
 
-The quintic degree for fixed \(t\) is not the hard part. The hard part is branch certification:
-- multiple normal roots;
-- continuous selection of the intended root;
-- branch switching near self-approach / small reach;
-- possible coupled algebra when maximizing the deviation along the implicit branch.
+The next uncertainty is empirical:
 
-## Next narrow target
+> Do these simple sign certificates pass often enough on ordinary close cubic pairs to justify the nonlinear normal layer?
 
-Develop a **sufficient admissibility certificate** for one nearby normal branch using quantities already available from \(E=G_De\).
+This should be tested before proving stronger admissibility theorems. If pass rates are high with little subdivision, the route has engineering value. If not, deeper normal-bundle theory risks becoming an inference game disconnected from the original simplification problem.
 
-Questions:
-- can the first-order predictor be enclosed in a root interval where \(F_u\) has one sign?
-- can regularity, curvature/tube separation, and tangent-angle bounds guarantee \(\sigma'>0\)?
-- can interval Newton / monotone-root arguments work spanwise without a global nearest-point search?
-- what assumptions are realistic for ordinary CAD simplification inputs?
-
-Do not yet maximize \(\|r\|_\infty\), design knot simplification, or claim a stage breakthrough.
+Therefore the next stage is a small numerical feasibility experiment, specified only in pseudocode. No further fine analysis should be added before that gate.

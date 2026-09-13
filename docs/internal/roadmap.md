@@ -13,18 +13,7 @@ Established:
 
 ## Phase 2 — first geometry-aware correction
 
-Status: useful first-order theory, but the global-curvature closure is rejected as a final metric.
-
-Retained:
-- normal error is the first-order geometric residual;
-- tangent removal in arc length;
-- fixed-degree algebraic certification of the first-order quantities.
-
-Rejected after Session 0007:
-\[
-N_{G,\perp}+\frac K2N_{G,\parallel}^2
-\]
-with one global \(K\), because remote curvature can make the bound arbitrarily conservative.
+Status: useful first-order theory; global-curvature closure retained only as a known boundary.
 
 ## Phase 3 — nonlinear local correspondence
 
@@ -34,87 +23,99 @@ Status: complete (Session 0007).
 
 ### Task 3.2 — Degen revisited as a design method
 
-Status: **complete (Session 0008)**.
+Status: complete (Session 0008).
 
-Main conclusion: inherit Degen's architecture rather than simply copy his planar distance:
+Main lesson: build an admissible geometric correspondence before choosing the deviation norm.
+
+### Task 3.3 — sufficient local admissibility certificate
+
+Status: **complete (Session 0009)**.
+
+For
 \[
-\text{admissible neighbourhood}
-\to\text{unique correspondence}
-\to\text{deviation field}
-\to\text{norm}.
+F(t,u)=(\widetilde C(t)-C(u))\cdot C'(u),
+\]
+on a local cubic span box \(T\times U\), the sign conditions
+\[
+F(t,u_0)>0,
+\qquad
+F(t,u_1)<0,
+\qquad
+F_u(t,u)<0
+\]
+certify exactly one local normal root \(u=\sigma(t)\) for every \(t\in T\). If also
+\[
+F_t(t,u)>0,
+\]
+then the branch is orientation preserving.
+
+The root is the unique minimizer of local squared distance over \(U\), and all sign tests are fixed-degree:
+\[
+\deg F\le(3,5),
+\quad
+\deg F_u\le(3,4),
+\quad
+\deg F_t\le(2,2).
+\]
+Tensor-product Bernstein sign tests with adaptive subdivision provide a natural certified implementation route.
+
+The Green layer supplies a local predictor. Besides the first-order
+\[
+\sigma_0=t-\frac{E\cdot C'}{\|C'\|^2},
+\]
+the exact one-step Newton predictor at the synchronized point is
+\[
+\sigma_N=t-\frac{E\cdot C'}{\|C'\|^2+E\cdot C''}.
 \]
 
-For the normal equation
-\[
-F(t,u)=(\widetilde C(t)-C(u))\cdot C'(u)=0,
-\]
-we established:
-- degree \(\le5\) in \(u\) for fixed \(t\) on a cubic span;
-- IFT denominator
-  \[
-  \|C'(u)\|^2-r\cdot C''(u);
-  \]
-- orientation formula
-  \[
-  \sigma'(t)=
-  \frac{\widetilde C'(t)\cdot C'(\sigma(t))}
-  {\|C'(\sigma(t))\|^2-r\cdot C''(\sigma(t))};
-  \]
-- the previous first-order shift is exactly the Newton/IFT linearization
-  \[
-  \sigma-t\approx-(E\cdot C')/\|C'\|^2;
-  \]
-- on a genuine one-to-one normal graph with unique nearest projection,
-  \[
-  d_H=\|r\|_\infty.
-  \]
+Detailed derivation:
+`docs/internal/derivations/local_normal_branch_certificate.md`.
 
-### Task 3.3 — sufficient admissibility certificate
+### Task 3.4 — numerical feasibility gate
 
-**Next session only.**
+**Next stage. Do not deepen the analysis before this test.**
 
-Goal: avoid solving the global nearest-point problem by proving that one nearby root branch is unique and orientation preserving using cheap data from the Green layer.
+Question:
 
-Study:
-1. predictor
-   \[
-   u_0(t)=t-\frac{E\cdot C'}{\|C'\|^2};
-   \]
-2. an interval around \(u_0\) where \(F_u\) keeps one sign;
-3. sufficient curvature/tube and tangent-angle conditions;
-4. interval-Newton or monotone-root certification per local span;
-5. continuity across spline knots and double knots;
-6. whether the certificate is realistic for ordinary CAD inputs rather than only tiny perturbations.
+> On ordinary close cubic pairs resembling simplification outputs, does the local box certificate succeed with small windows and little subdivision?
+
+The experiment is deliberately small and diagnostic. No production source code is required at this stage.
+
+Test families:
+1. same or nearly same parameterization with small normal perturbation;
+2. mild tangential reparameterization plus small normal perturbation;
+3. nonuniform knot spans / speed variation;
+4. moderate curvature;
+5. one controlled near-self-approach case as a negative control.
+
+For each candidate span:
+- build a predicted reference interval from \(\sigma_0\) or \(\sigma_N\);
+- test Bernstein signs of boundary \(F\), \(F_u\), and \(F_t\);
+- if inconclusive, subdivide the candidate span up to a small depth;
+- record pass/fail, subdivisions, window size, and whether a general nearest-point check agrees with the selected branch.
 
 Success criterion:
-- a branch-existence/uniqueness/orientation certificate that is local and fixed-dimensional, with no global pairwise curve search.
+- ordinary close cases mostly certify with zero or very few subdivisions;
+- failures concentrate in deliberately ambiguous/high-curvature cases.
 
 Failure criterion:
-- admissibility certification itself requires a global root-selection problem comparable to Hausdorff computation.
+- routine close pairs frequently fail the simple sign tests or require deep subdivision.
 
-Out of scope:
-- optimizing the nonlinear normal distance;
-- simplification primitives;
-- source code;
-- full TeX stage note.
+If successful, continue to tolerance certification along the implicit branch.
+If unsuccessful, stop strengthening admissibility theory and reconsider whether synchronized Green error plus occasional general verification is the better engineering architecture.
 
-## Phase 4 — second adversarial review / stage decision
+## Phase 4 — branch-error certification / second attack
 
-Only after Task 3.3.
+Blocked on Task 3.4.
 
-Attack:
-- branch ambiguity near self-approach;
-- high curvature / small tube radius;
-- near-zero speed;
-- double knots;
-- same-image reparameterization;
-- cost of following an implicit normal branch.
+Possible next question only if the feasibility gate succeeds:
+- can \(\|\widetilde C(t)-C(\sigma(t))\|\le\varepsilon\) be certified without explicitly solving the entire branch?
 
-If the repaired framework survives, perform targeted prior-art verification and consider the first self-contained TeX note.
+Do not open this question before the feasibility gate.
 
 ## Phase 5 — simplification algorithm
 
-Postponed until a geometric bridge survives review.
+Postponed.
 
 ## Parking lot
 
