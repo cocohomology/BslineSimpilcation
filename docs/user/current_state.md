@@ -8,7 +8,7 @@ C\xrightarrow{D^2}q=C'',
 \]
 with \(q\) piecewise linear and possibly discontinuous at double knots.
 
-The objective remains: simplify representation complexity under geometric tolerance.
+The objective remains: simplify representation complexity under a geometric tolerance.
 
 ---
 
@@ -36,7 +36,7 @@ E=G_De.
 \]
 For PL \(e\), \(\|E\|_\infty\) is certifiable by fixed-degree one-variable algebra or Bézier subdivision and gives a rigorous Hausdorff upper bound.
 
-### 3. Local normal correspondence is a viable geometry-aware fast path
+### 3. Local normal correspondence is a viable geometry-aware primitive
 
 Define
 \[
@@ -46,32 +46,32 @@ On a local cubic-cubic box, boundary sign separation together with
 \[
 F_u<0
 \]
-certifies one unique local normal branch \(u=\sigma(t)\); adding
-\[
-F_t>0
-\]
-certifies orientation preservation.
-
-The 2026-09-14 Codex feasibility experiment is evidence, not proof, but it strongly supports the permissiveness of this primitive on its structured close-curve samples: ordinary cases almost always certified with little subdivision, while failures concentrated in the intended near-self-approach controls. The experiment also explicitly did **not** prove a whole-curve correspondence theorem and did not compute the maximum deviation along the implicit branch.
+certifies one unique local normal branch \(u=\sigma(t)\). The 2026-09-14 Codex feasibility experiment strongly supports the permissiveness of this primitive on the tested structured close-curve families, while leaving near-self-approach as the intended difficult regime.
 
 ---
 
-## Session 0014 correction — what the experiment actually tells us to do next
+## Stable side result — why Hausdorff alone is not enough for differential reasoning
 
-The active theory should **not** jump yet to a new q-space optimization theory. Sessions 0012–0013 explored a Green-induced metric direction, but that was premature as the next main-line task.
+Session 0015 directly studied Hausdorff distance rather than avoiding it.
 
-For a fixed endpoint gauge,
-\[
-\|G_D(q-\widetilde q)\|_\infty
-=\|C-\widetilde C\|_\infty,
-\]
-so the Green norm is best viewed first as the pullback of synchronized positional error through the reconstruction map. Its q-space viewpoint may still become useful for candidate generation later, but it is not by itself a new approximation breakthrough.
+The main conclusion is asymmetric:
 
-The experiment passed the admissibility gate. Therefore the logically next missing piece is to finish the geometry-aware verifier far enough to decide a tolerance along an already-certified local branch.
+- pure Hausdorff closeness of curve images does **not** control derivative vectors, tangent directions, antiderivative curves, or curvature in general;
+- once an ordered correspondence and a regularity scale are supplied, quantitative derivative control becomes possible;
+- with synchronized positional error \(\|E\|_\infty\le\varepsilon\) and \(\|E''\|_\infty\le M\), the natural interior estimate is
+  \[
+  \|E'\|\lesssim \sqrt{M\varepsilon};
+  \]
+- reach/local feature size is the natural geometric scale behind Hausdorff-to-tangent stability.
+
+This result should be retained for the future TeX note because it explains why a pure set-distance formulation cannot by itself support the derivative-domain reasoning used by the project.
+
+Detailed note:
+`docs/internal/derivations/hausdorff_derivative_integral_relations.md`.
 
 ---
 
-## New local deviation result
+## Session 0014 — local deviation on one certified branch
 
 On a certified branch, let
 \[
@@ -79,71 +79,104 @@ r(t)=\widetilde C(t)-C(\sigma(t)),
 \qquad
 \psi(t)=\|r(t)\|^2.
 \]
-Because the normal equation gives
-\[
-r(t)\cdot C'(\sigma(t))=0,
-\]
-we obtain
+Then
 \[
 \boxed{
 \psi'(t)=2r(t)\cdot\widetilde C'(t).
 }
 \]
-
-Hence every interior extremum of the branch deviation is a **common-normal pair**:
+Hence every interior extremum of the branch deviation is a common-normal pair:
 \[
-\boxed{
 (\widetilde C(t)-C(u))\cdot C'(u)=0,
-\qquad
+\]
+\[
 (\widetilde C(t)-C(u))\cdot\widetilde C'(t)=0.
+\]
+For cubic spans these are fixed-degree bivariate polynomial equations. A cheap whole-box Bernstein bound on squared distance can be tried first; only inconclusive boxes need common-normal refinement.
+
+---
+
+## Session 0016 — global stitching is not required for a Hausdorff-only target
+
+The previous roadmap treated whole-curve monotone branch stitching as the next mandatory step. That turns out to be stronger than necessary.
+
+If source intervals \(T_i\) cover the candidate parameter domain and, on each interval, a certified local branch \(\sigma_i\) satisfies
+\[
+\|\widetilde C(t)-C(\sigma_i(t))\|\le\varepsilon_i,
+\]
+then immediately
+\[
+\overrightarrow d_H(\widetilde C,C)
+\le
+\max_i\varepsilon_i.
+\]
+No continuity or agreement between adjacent local branches is needed for this directed Hausdorff bound.
+
+Repeating the same construction with the two curves swapped gives
+\[
+\boxed{
+d_H(C,\widetilde C)
+\le
+\max\{B_{\widetilde C\to C},B_{C\to\widetilde C}\}.
 }
 \]
+Therefore a pure Hausdorff verifier can be built from **two local directed passes** and does not require a global monotone correspondence.
 
-For cubic spans these are fixed-degree bivariate polynomial equations with bidegrees at most
+A second consequence is that the orientation condition
 \[
-(3,5)\quad\text{and}\quad(5,3).
+F_t>0
 \]
-Therefore the exact maximum deviation on one certified smooth box can be reduced to finitely many polynomial intersection candidates plus box boundaries, with a separate benign treatment for degenerate constant-distance branches.
+is not needed for Hausdorff-only certification. Boundary sign separation plus \(F_u<0\) is enough to define the local branch used for a directed upper bound. Orientation remains useful only for a stronger Fréchet/order-preserving interpretation or for a one-pass target-coverage strategy.
 
-A cheaper sufficient first layer is to Bernstein-bound
-\[
-\|\widetilde C(t)-C(u)\|^2
-\]
-over the certified box itself; only inconclusive boxes need sharper common-normal isolation.
+Detailed derivation:
+`docs/internal/derivations/local_cover_hausdorff_certificate.md`.
 
 ---
 
-## Important geometric clarification from the test feedback
+## Current architecture
 
-A locally certified normal foot does **not** need to be the global nearest point in order to provide an upper bound from the candidate curve to the reference curve. The near-self-approach experiment found locally valid normal feet that were not globally nearest; this is a limitation only if exact nearest-point equality is demanded.
-
-For a full symmetric Hausdorff upper bound, however, local boxes must either:
-
-- stitch into a global monotone bijective correspondence, or
-- be complemented by a reverse-direction correspondence.
-
-The existing experiment did not establish that global assembly theorem.
-
----
-
-## Current active question
-
-The next narrow theoretical task is therefore:
+The verification layer is now conceptually simpler:
 
 \[
 \boxed{
-\text{How do certified local normal branches stitch into a whole-curve correspondence?}
+\text{forward local normal cover}
++
+\text{reverse local normal cover}
+\Longrightarrow
+\text{symmetric Hausdorff upper bound}.
 }
 \]
 
-Only after this is understood should the project decide whether the verification layer is mature enough to return to candidate generation in \(q=C''\) space.
+Each local branch can use the Session-0014 tolerance machinery. Global branch stitching is demoted to an optional stronger semantic layer for Fréchet/order-sensitive applications.
+
+This also cleanly separates two notions:
+
+- **Hausdorff geometry:** only image-set closeness is required;
+- **ordered/differential comparison:** requires a globally compatible correspondence and additional regularity.
+
+---
+
+## Next gate
+
+The next task is a targeted code feasibility experiment, using the existing structured suite, to test:
+
+- the old four-condition certificate versus the Hausdorff-only certificate without \(F_t\);
+- forward and reverse pass rates/subdivision depths;
+- the final two-pass geometric bound versus synchronized Green error and an independent numerical Hausdorff reference;
+- how often the cheap whole-box distance bound avoids common-normal root isolation.
+
+The experiment plan is:
+`docs/internal/experiments/two_sided_hausdorff_certificate_test_plan.md`.
 
 ---
 
 ## Status
 
-- ADMISSIBILITY THEORY: locally established; feasibility evidence positive.
-- LOCAL BRANCH TOLERANCE: polynomial stationary structure established in Session 0014.
-- GLOBAL CORRESPONDENCE / SYMMETRIC HAUSDORFF UPPER BOUND: next theoretical gap.
-- GREEN-METRIC CANDIDATE-GENERATION DETOUR: parked, not discarded.
-- TEX NOTE: still deferred until the verification architecture survives global assembly / second review.
+- COMPLEXITY REDUCTION IN \(C''\): established.
+- SYNCHRONIZED GREEN ERROR: established.
+- LOCAL NORMAL ADMISSIBILITY: established theoretically; feasibility evidence positive.
+- LOCAL BRANCH TOLERANCE STRUCTURE: established theoretically.
+- PURE HAUSDORFF GLOBAL ASSEMBLY: simplified to two directed local covers; no global stitching theorem is required.
+- FRÉCHET / ORDER-PRESERVING GLOBAL STITCHING: optional, parked unless application semantics require it.
+- NEXT: targeted two-sided verifier experiment.
+- TEX NOTE: still deferred until this final verification gate is reviewed.

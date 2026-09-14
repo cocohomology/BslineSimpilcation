@@ -39,12 +39,11 @@ Observed on the structured synthetic suite:
 - all baseline fallbacks were concentrated in the near-self-approach control family;
 - independent root checks and exact rational Bernstein-sign audits did not expose a local certificate error;
 - Newton prediction did not materially improve the pass/fallback picture;
-- no whole-curve global correspondence theorem or implicit-branch max-deviation certificate was tested.
+- no implicit-branch max-deviation certificate was tested.
 
 Decision:
 - keep the simple local certificate;
-- do not deepen admissibility theory preemptively;
-- move to tolerance certification along an already-certified branch.
+- do not deepen admissibility theory preemptively.
 
 ## Phase 4 — complete the geometry-aware verifier
 
@@ -52,92 +51,113 @@ Decision:
 
 Status: **complete theoretically (Session 0014).**
 
-For a certified branch \(u=\sigma(t)\), define
+For a certified branch \(u=\sigma(t)\),
 \[
-\psi(t)=\|\widetilde C(t)-C(\sigma(t))\|^2.
+\psi(t)=\|\widetilde C(t)-C(\sigma(t))\|^2
 \]
-Then
+satisfies
 \[
 \psi'(t)
 =2(\widetilde C(t)-C(\sigma(t)))\cdot\widetilde C'(t).
 \]
-Therefore interior extrema satisfy the common-normal system
-\[
-(\widetilde C(t)-C(u))\cdot C'(u)=0,
-\]
-\[
-(\widetilde C(t)-C(u))\cdot\widetilde C'(t)=0.
-\]
-For cubic spans the bidegrees are at most \((3,5)\) and \((5,3)\).
-
-A cheap whole-box Bernstein bound on
-\[
-D(t,u)=\|\widetilde C(t)-C(u)\|^2
-\]
-can be tried first; common-normal root isolation is the exact generic fallback inside the certified box.
+Interior extrema are common-normal pairs. For cubic spans this reduces to fixed-degree bivariate polynomial equations. A whole-box Bernstein distance bound is the cheap first layer.
 
 Detailed derivation:
 `docs/internal/derivations/normal_branch_tolerance.md`.
 
-### Task 4.2 — global assembly of local branches
+### Side study — Hausdorff vs differential/integral stability
 
-**Next session only.**
+Status: **stable conceptual result (Session 0015).**
 
-Goal:
-turn local one-span certificates into a mathematically valid whole-curve geometric upper bound without solving a global nearest-point problem.
+Keep for the future TeX motivation:
+- Hausdorff alone does not control derivative vectors, tangent directions, antiderivatives, or curvature;
+- after a correspondence and regularity scale are supplied, first-derivative stability has square-root scaling;
+- reach/local feature size is the natural geometric scale coupling curvature and self-approach;
+- no inverse recovery of \(q=C''\) from Hausdorff error is available under the current assumptions.
 
-Study:
-1. compatibility of adjacent local roots at shared candidate knots;
-2. sufficient conditions for continuous stitching of locally increasing branches;
-3. coverage/onto conditions for the reference parameter interval;
-4. alternative architecture: two one-sided directed correspondences instead of one global bijection;
-5. knot-crossing / double-knot endpoint conventions.
+Detailed derivation:
+`docs/internal/derivations/hausdorff_derivative_integral_relations.md`.
 
-Success criterion:
-- a small set of checkable local/interface conditions that gives a global monotone correspondence or two directed upper-bound correspondences.
+Before the final TeX note, source-check the precise reach/manifold-reconstruction constants and references.
 
-Failure criterion:
-- proving global assembly requires a global root-selection/topology problem comparable to the geometry we were trying to avoid.
+### Task 4.2 — local-to-global Hausdorff assembly
 
-Out of scope for Task 4.2:
-- free knots;
-- q-space candidate generation;
-- production code;
-- global reach computation;
-- exact global nearest-point uniqueness.
+Status: **resolved by simplification (Session 0016).**
 
-### Task 4.3 — second adversarial review / optional code gate
+The former plan asked for a globally stitched monotone normal branch. That is stronger than necessary for a pure Hausdorff target.
 
-Only after Task 4.2.
+If local source intervals cover the source curve and each interval has a certified correspondence within \(\varepsilon\), then the corresponding directed Hausdorff distance is at most \(\varepsilon\). Repeating with source and target swapped gives the symmetric Hausdorff bound.
 
-Attack:
-- branch switching across adjacent windows;
-- gaps/overlaps in reference coverage;
-- near self-approach;
-- low-speed / short-span interfaces;
-- double knots;
-- constant-distance / common-factor degeneracies.
+Therefore the minimal architecture is
+\[
+\boxed{
+\text{forward local cover}
++
+\text{reverse local cover}
+\Longrightarrow
+\text{symmetric Hausdorff upper bound}.
+}
+\]
 
-If the global assembly theorem is simple enough, prepare one targeted Codex feasibility test for branch-deviation certification and stitching. If it becomes global-nearest-point theory in disguise, stop and fall back to synchronized Green verification.
+Consequences:
+- local branches need not agree at candidate-span interfaces;
+- branch switching is harmless for Hausdorff upper bounds;
+- the orientation condition \(F_t>0\) is unnecessary for the two-pass Hausdorff route;
+- double knots require only local piecewise sign handling, not a global stitching theorem;
+- a globally monotone branch is now an optional Fréchet/order-sensitive layer.
+
+Detailed derivation:
+`docs/internal/derivations/local_cover_hausdorff_certificate.md`.
+
+### Task 4.3 — targeted two-sided feasibility gate
+
+**Next active task.**
+
+Use the existing structured curve suite to test the now-complete local Hausdorff architecture.
+
+Compare:
+1. old four-condition local certificate versus boundary signs + \(F_u<0\) only;
+2. forward and reverse directed pass rates / subdivision depths;
+3. two-pass branch bound versus synchronized Green error and an independent numerical Hausdorff reference;
+4. cheap whole-box distance bound versus branch-specific common-normal refinement.
+
+Plan:
+`docs/internal/experiments/two_sided_hausdorff_certificate_test_plan.md`.
+
+Success signal:
+- both directions are usually cheap on ordinary close pairs;
+- dropping \(F_t\) reduces work;
+- branch bounds are meaningfully tighter than synchronized error in tangential/reparameterized cases;
+- difficult behavior stays concentrated in self-approach / genuinely ambiguous cases.
+
+Failure signal:
+- reverse certification is routinely expensive;
+- branch max certification dominates cost;
+- the final two-pass bound is not materially tighter than the synchronized bound;
+- fallback frequency makes the normal layer unattractive.
+
+After this gate, perform one short adversarial/theory review of any exposed failure mode. Do not invent new global topology theory unless the data forces it.
 
 ## Phase 5 — candidate generation in \(q=C''\) space
 
-Status: **postponed until Phase 4 reaches a stable decision.**
+Status: **next main phase if Task 4.3 is satisfactory.**
 
-The likely future main problem remains:
+The main problem will be
 \[
 \text{low-complexity }PL_{\rm disc}\text{ approximation of }q=C''
 \]
 with kink cost 1 and jump cost 2.
 
-Sessions 0012–0013 explored direct Green-induced optimization. That direction is now parked rather than active: for a fixed endpoint gauge, the Green norm is exactly the pullback of synchronized positional error, so it should not be treated as a metric breakthrough by itself.
-
-When Phase 5 begins, revisit `docs/internal/theory_seeds.md`, especially free-breakpoint approximation and moment-localized Hermite block coarsening.
+Sessions 0012–0013 explored direct Green-induced optimization and are parked. When Phase 5 begins, revisit `docs/internal/theory_seeds.md`, especially:
+- nonlinear/free-breakpoint PL approximation;
+- moment-localized Hermite block coarsening;
+- possible dynamic-programming / shortest-path restricted baselines.
 
 ## TeX note decision
 
-Still deferred.
+Still deferred, but the trigger is now close.
 
-A good trigger is either:
-- Phase 4 yields a coherent local-to-global certified geometric verifier that survives the second attack; or
-- Phase 4 fails in a theoretically informative way that clearly defines the useful boundary of the normal-correspondence approach.
+A strong trigger is:
+- Task 4.3 supports the two-directed-pass architecture and the post-test adversarial review reveals no structural failure.
+
+The eventual TeX note should explicitly include the Session-0015 Hausdorff/reach discussion near the motivation section, because it explains why pure Hausdorff geometry cannot be used to infer derivative-domain closeness and why the project introduces correspondence machinery.

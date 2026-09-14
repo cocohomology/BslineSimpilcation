@@ -55,7 +55,6 @@ Since
 \[
 \ker D^2=\mathcal P_1,
 \]
-
 a second-derivative approximation determines the curve only up to an affine vector function.
 
 The current gauge fixes both endpoints. Another possibility is to choose the affine correction optimally after q_tilde is selected, for example minimizing synchronized or geometric max error.
@@ -68,17 +67,29 @@ Why it is parked: B-Rep edges often make endpoints topologically meaningful; rel
 
 ---
 
-## 4. Symmetric geometry-aware certification
+## 4. Symmetric geometry-aware certification — REOPENED IN SESSION 0016
 
-Current normal projection is reference-biased: candidate points project to the original curve.
+This seed is no longer parked.
 
-Potential direction: combine normal graphs in both directions, or use a symmetric deviation that remains cheap when curves are close.
+Session 0016 proved that a pure Hausdorff verifier does not require a single globally stitched normal branch. A local directed cover gives one directed Hausdorff upper bound; a second local cover with the curves swapped gives the other direction. Thus
 
-Why it may matter: may tighten one-sided conservatism and better approximate Hausdorff symmetry.
+\[
+\text{forward local cover}
++
+\text{reverse local cover}
+\Longrightarrow
+\text{symmetric Hausdorff upper bound}.
+\]
 
-Why it is parked: symmetry can double the machinery without changing the main candidate-generation problem.
+A stronger single-family alternative is to certify that forward branch images cover the full target parameter interval.
 
-**Reopen if:** Session 0015 shows that a single globally stitched monotone branch is awkward, while two directed local correspondences give a simpler full Hausdorff upper bound.
+The important simplification is that the orientation condition \(F_t>0\) is optional in the two-pass Hausdorff architecture. It remains relevant only for target-coverage bookkeeping or an ordered/Fréchet interpretation.
+
+Active documents:
+- `docs/internal/derivations/local_cover_hausdorff_certificate.md`
+- `docs/internal/experiments/two_sided_hausdorff_certificate_test_plan.md`
+
+Do not reopen this as a separate theory branch unless the new two-sided experiment exposes a concrete asymmetry or failure.
 
 ---
 
@@ -86,11 +97,15 @@ Why it is parked: symmetry can double the machinery without changing the main ca
 
 A true non-overlapping normal tube gives unique nearest projection and turns the normal deviation max into exact Hausdorff distance.
 
-Why it may matter: supplies a clean theoretical regime in which the nonlinear normal metric is exact.
+Session 0015 additionally showed why reach is conceptually important even when we do not compute it: Hausdorff distance alone cannot control tangent directions, while reach/local feature size supplies the geometric regularity scale coupling curvature and self-approach.
+
+Why it may matter: supplies a clean theoretical regime in which normal projection is exact and explains the square-root scale of Hausdorff-to-tangent stability.
 
 Why it is parked: computing or certifying global reach for general CAD curves may be as hard as the geometric problem we are trying to avoid, especially near self-approach.
 
 **Reopen if:** empirical data indicate that a simple conservative lower bound on local feature size is already available from CAD context, or if branch ambiguity becomes the primary obstacle after the fast-path experiment.
+
+Before the final TeX note, independently verify the precise reach/manifold-reconstruction references and constants used in the motivation discussion.
 
 ---
 
