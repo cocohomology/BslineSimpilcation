@@ -78,7 +78,7 @@ Why it may matter: may tighten one-sided conservatism and better approximate Hau
 
 Why it is parked: symmetry can double the machinery without changing the main candidate-generation problem.
 
-**Reopen if:** one-sided certification passes often but is demonstrably much looser than the actual symmetric geometric error.
+**Reopen if:** Session 0015 shows that a single globally stitched monotone branch is awkward, while two directed local correspondences give a simpler full Hausdorff upper bound.
 
 ---
 
@@ -125,15 +125,15 @@ Connections may include:
 - sparse change-point models;
 - nonlinear approximation / n-term approximation.
 
-This is likely not merely a parked curiosity; it is a probable future main line.
+This remains a probable future main line.
 
-**Reopen if:** the current feasibility test validates at least one usable certification architecture, so the project can safely shift attention from error measurement to candidate generation.
+**Reopen if:** the geometry-aware verifier reaches a stable local-to-global decision (successful or deliberately abandoned), so candidate generation can become the main problem without leaving an unfinished verification gap.
 
 ---
 
 ## 8. Direct optimization under the Green operator
 
-Rather than approximate q in Lp and then estimate position error, one could formulate candidate selection directly through
+Rather than approximate q in Lp and then estimate position error, one could formulate candidate selection through
 
 \[
 \|G_D(q-\widetilde q)\|_\infty
@@ -141,11 +141,11 @@ Rather than approximate q in Lp and then estimate position error, one could form
 
 or a localized geometry-aware variant.
 
-Why it may matter: this preserves cancellation and location information and may produce very different optimal breakpoints from ordinary PL approximation norms.
+Session 0014 clarified an important limitation: under the fixed endpoint reconstruction map, this quantity is exactly the synchronized positional \(L^\infty\) error pulled back to q-space. Therefore “Green metric” alone is not a new approximation objective; its value must come from computational structure exposed by q-space, not from renaming the positional norm.
 
-Why it is parked: the optimization landscape and combinatorial structure are not yet understood; premature work here risks solving the wrong metric problem.
+Why it may matter: q-space may expose locality, moments, sparse break structure, or useful optimization variables even though the norm itself is only a pullback.
 
-**Reopen if:** synchronized Green error becomes the accepted baseline objective after the geometric-certificate experiment, or if normal correspondence is relegated to final verification only.
+**Reopen if:** candidate generation begins and a concrete q-space structure makes the optimization simpler than direct cubic approximation.
 
 ---
 
@@ -173,7 +173,41 @@ Why it is parked: higher-order derivatives amplify conditioning and the clean ge
 
 ---
 
-## 11. Reminder to future work
+## 11. Moment-localized q-block replacement / cubic Hermite coarsening
+
+Session 0014 re-analysis exposed a concrete q-space locality mechanism.
+
+On an interval \(I=[\alpha,\beta]\), let \(q=C''\). Choose the unique affine function \(\ell\) such that
+\[
+\int_\alpha^\beta(q-\ell)(s)\,ds=0,
+\]
+\[
+\int_\alpha^\beta(\beta-s)(q-\ell)(s)\,ds=0.
+\]
+
+If \(\widetilde C''=\ell\) on the block and \(\widetilde C(\alpha)=C(\alpha)\), \(\widetilde C'(\alpha)=C'(\alpha)\), these two moment conditions force
+\[
+\widetilde C(\beta)=C(\beta),
+\qquad
+\widetilde C'(\beta)=C'(\beta).
+\]
+Thus \(\widetilde C\) is exactly the standard cubic Hermite interpolant of \(C\) on the block, and the position/tangent error does not propagate outside the block if q is unchanged elsewhere.
+
+Potential consequence: if retained breakpoints are restricted to an ordered candidate set, an edge \(i\to j\) could represent replacing all intervening q-knots by one Hermite cubic block. Feasible edges could then support a shortest-path / block-deletion architecture, naturally allowing several knots to disappear together rather than through single-knot greedy removal.
+
+Why it may matter: this is one of the first q-space observations that creates genuine locality rather than merely re-expressing synchronized error.
+
+Why it is parked:
+- it pins the original position and derivative at every retained breakpoint;
+- joins are generically only C1, hence double cubic knots;
+- standard Hermite interpolation is parameterization dependent;
+- it may be much more restrictive than the true best low-complexity approximant.
+
+**Reopen if:** Phase 4 finishes and candidate generation becomes active. Test it first as a globally optimizable restricted baseline, not as the presumed final algorithm.
+
+---
+
+## 12. Reminder to future work
 
 These entries are **not a queue**. They are memory anchors.
 

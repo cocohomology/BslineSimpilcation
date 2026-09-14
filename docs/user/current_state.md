@@ -2,121 +2,148 @@
 
 ## Scope
 
-The research targets regular \(C^1\), cubic, non-rational spline curves. The structural reduction remains
+The research still targets regular \(C^1\), cubic, non-rational spline curves. The structural reduction remains
 \[
 C\xrightarrow{D^2}q=C'',
 \]
 with \(q\) piecewise linear and possibly discontinuous at double knots.
 
-The objective remains: simplify representation complexity under geometric tolerance. The current architecture is:
-
-\[
-\text{simplify in }C''	ext{ domain}
-\rightarrow
-\text{construct candidate}
-\rightarrow
-\text{certify geometric error}.
-\]
+The objective remains: simplify representation complexity under geometric tolerance.
 
 ---
 
 ## Stable foundation
 
-### 1. Complexity reduction through \(C''\)
+### 1. Complexity is exact in the \(C''\) domain
 
 For \(C^1\) piecewise cubics,
 \[
-D^2:S_3^1\to PL_{disc}
+D^2:S_3^1\to PL_{\rm disc}
 \]
-is onto with affine kernel. Jumps and kinks of \(C''\) correspond to knot multiplicity, so the second derivative domain is a natural representation-complexity domain.
+is onto with affine kernel. Jumps and continuous kinks of \(C''\) encode double and simple cubic knots.
 
-### 2. Green synchronized error
+### 2. Fixed-endpoint synchronized error is exact
 
-For
+With
 \[
-E=C-\widetilde C,\qquad e=C''-\widetilde C'',\qquad E(a)=E(b)=0,
+E=C-\widetilde C,
+\qquad e=C''-\widetilde C'',
+\qquad E(a)=E(b)=0,
 \]
 we have
 \[
 E=G_De.
 \]
-The synchronized displacement is exact, cheap, and certifiable for cubic spans.
+For PL \(e\), \(\|E\|_\infty\) is certifiable by fixed-degree one-variable algebra or Bézier subdivision and gives a rigorous Hausdorff upper bound.
 
-### 3. Local normal correspondence layer
-
-The earlier tangent/normal analysis is retained as a local geometric layer, not as a replacement for the original problem.
+### 3. Local normal correspondence is a viable geometry-aware fast path
 
 Define
 \[
 F(t,u)=(\widetilde C(t)-C(u))\cdot C'(u).
 \]
-A certified local normal branch satisfies
+On a local cubic-cubic box, boundary sign separation together with
 \[
-F(t,\sigma(t))=0.
+F_u<0
 \]
-
-The branch certificate uses fixed-degree sign tests:
+certifies one unique local normal branch \(u=\sigma(t)\); adding
 \[
-F(t,u_0)>0,
-\quad F(t,u_1)<0,
-\quad F_u(t,u)<0,
-\quad F_t(t,u)>0.
+F_t>0
 \]
+certifies orientation preservation.
 
-For cubic spans these remain low-degree polynomial tests suitable for Bernstein certification and local subdivision.
+The 2026-09-14 Codex feasibility experiment is evidence, not proof, but it strongly supports the permissiveness of this primitive on its structured close-curve samples: ordinary cases almost always certified with little subdivision, while failures concentrated in the intended near-self-approach controls. The experiment also explicitly did **not** prove a whole-curve correspondence theorem and did not compute the maximum deviation along the implicit branch.
 
 ---
 
-## Feasibility experiment result (Session 0011)
+## Session 0014 correction — what the experiment actually tells us to do next
 
-A Codex-generated experiment tested whether the local certificate is practical as a fast path.
+The active theory should **not** jump yet to a new q-space optimization theory. Sessions 0012–0013 explored a Green-induced metric direction, but that was premature as the next main-line task.
 
-Important interpretation:
+For a fixed endpoint gauge,
+\[
+\|G_D(q-\widetilde q)\|_\infty
+=\|C-\widetilde C\|_\infty,
+\]
+so the Green norm is best viewed first as the pullback of synchronized positional error through the reconstruction map. Its q-space viewpoint may still become useful for candidate generation later, but it is not by itself a new approximation breakthrough.
 
-- This is **not** a proof of the theory.
-- Passing does **not** mean the simplification problem is solved.
-- Failure would only expose limitations of the certificate.
-
-Results:
-
-- Ordinary close cubic pairs: 800/800 certified.
-- 799/800 ordinary cases succeeded with subdivision depth 0–2.
-- Near-self-approach negative controls: 124/160 certified; failures concentrated in the expected multi-normal / competing-branch regime.
-
-The experiment supports continuing the local certificate as an engineering verification layer, but does not justify developing a full global normal theory.
+The experiment passed the admissibility gate. Therefore the logically next missing piece is to finish the geometry-aware verifier far enough to decide a tolerance along an already-certified local branch.
 
 ---
 
-## Updated research direction
+## New local deviation result
 
-The normal layer has passed its first feasibility gate. The next focus should return to the original bottleneck:
-
+On a certified branch, let
+\[
+r(t)=\widetilde C(t)-C(\sigma(t)),
+\qquad
+\psi(t)=\|r(t)\|^2.
+\]
+Because the normal equation gives
+\[
+r(t)\cdot C'(\sigma(t))=0,
+\]
+we obtain
 \[
 \boxed{
-\text{How to construct a low-complexity approximation of }q=C''?
+\psi'(t)=2r(t)\cdot\widetilde C'(t).
 }
 \]
 
-The previous work on Green and normal correspondence is now viewed as an error-certification framework:
-
+Hence every interior extremum of the branch deviation is a **common-normal pair**:
 \[
-q\text{-simplification}
-\rightarrow
-\widetilde C
-\rightarrow
-\text{Green estimate}
-\rightarrow
-\text{optional normal verification}.
+\boxed{
+(\widetilde C(t)-C(u))\cdot C'(u)=0,
+\qquad
+(\widetilde C(t)-C(u))\cdot\widetilde C'(t)=0.
+}
 \]
 
-The project should avoid spending excessive effort strengthening admissibility theory unless a concrete obstacle appears.
+For cubic spans these are fixed-degree bivariate polynomial equations with bidegrees at most
+\[
+(3,5)\quad\text{and}\quad(5,3).
+\]
+Therefore the exact maximum deviation on one certified smooth box can be reduced to finitely many polynomial intersection candidates plus box boundaries, with a separate benign treatment for degenerate constant-distance branches.
+
+A cheaper sufficient first layer is to Bernstein-bound
+\[
+\|\widetilde C(t)-C(u)\|^2
+\]
+over the certified box itself; only inconclusive boxes need sharper common-normal isolation.
 
 ---
 
-## Current status
+## Important geometric clarification from the test feedback
 
-- THEORY: stable first framework established.
-- NORMAL CERTIFICATE: promising fast path, not a universal solution.
-- CODE TEST: completed as feasibility evidence only.
-- TEX NOTE: deferred.
-- NEXT MAIN TASK: return to \(C''\)-domain simplification and candidate generation.
+A locally certified normal foot does **not** need to be the global nearest point in order to provide an upper bound from the candidate curve to the reference curve. The near-self-approach experiment found locally valid normal feet that were not globally nearest; this is a limitation only if exact nearest-point equality is demanded.
+
+For a full symmetric Hausdorff upper bound, however, local boxes must either:
+
+- stitch into a global monotone bijective correspondence, or
+- be complemented by a reverse-direction correspondence.
+
+The existing experiment did not establish that global assembly theorem.
+
+---
+
+## Current active question
+
+The next narrow theoretical task is therefore:
+
+\[
+\boxed{
+\text{How do certified local normal branches stitch into a whole-curve correspondence?}
+}
+\]
+
+Only after this is understood should the project decide whether the verification layer is mature enough to return to candidate generation in \(q=C''\) space.
+
+---
+
+## Status
+
+- ADMISSIBILITY THEORY: locally established; feasibility evidence positive.
+- LOCAL BRANCH TOLERANCE: polynomial stationary structure established in Session 0014.
+- GLOBAL CORRESPONDENCE / SYMMETRIC HAUSDORFF UPPER BOUND: next theoretical gap.
+- GREEN-METRIC CANDIDATE-GENERATION DETOUR: parked, not discarded.
+- TEX NOTE: still deferred until the verification architecture survives global assembly / second review.

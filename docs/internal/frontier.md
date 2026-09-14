@@ -19,118 +19,170 @@ is onto with affine kernel. Jump/kink structure of \(q\) records minimal cubic k
 ### F2 — exact synchronized Green error
 Under fixed endpoints,
 \[
-E=G_De,\qquad N_G=\|E\|_\infty,
+E=G_De,
+\qquad
+N_G=\|E\|_\infty,
 \]
-and \(d_H\le N_G\). For PL \(e\), \(N_G\) is fixed-degree certifiable.
+and
+\[
+d_H(\operatorname{Im}C,\operatorname{Im}\widetilde C)\le N_G.
+\]
+For PL \(e\), \(N_G\) is fixed-degree certifiable.
 
-### F3 — first-order geometry
-Tangential synchronized displacement is the linearized reparameterization direction; normal displacement is the first-order geometric residual. The former Session-0005 shift is now understood as the first Newton/IFT step for the nonlinear normal equation.
+### F3 — tangent/normal first-order interpretation
+Tangential synchronized displacement is the linearized reparameterization direction; normal displacement is the first-order geometric residual. The earlier tangential shift is the first Newton/IFT step for the nonlinear normal equation.
 
 ### F4 — global-curvature closure is only a boundary result
 The bound
 \[
 N_{G,\perp}+\frac K2N_{G,\parallel}^2
 \]
-is correct but can be arbitrarily conservative because remote curvature can pollute a local tangential shift. Keep this as a known capability boundary, not a problem that must be repaired universally.
+is mathematically correct but can be arbitrarily conservative because remote curvature can pollute a local tangential shift. Keep this as a capability boundary, not a formula to repair universally.
 
-### F5 — Degen lesson: correspondence before norm
-Degen's useful architecture is
-\[
-\text{admissible normal neighbourhood}
-\to\text{unique correspondence}
-\to\text{deviation function}
-\to\text{sup norm}.
-\]
-For our space-curve setting, use
+### F5 — local normal branch architecture
+Define
 \[
 F(t,u)=(\widetilde C(t)-C(u))\cdot C'(u).
 \]
-A normal branch satisfies \(F(t,\sigma(t))=0\).
+On a local cubic-cubic box \(T\times U\), the Session-0009 sign certificate
+\[
+F(t,u_L)>0,\qquad F(t,u_R)<0,\qquad F_u<0
+\]
+gives one unique local normal root \(u=\sigma(t)\) for each \(t\in T\). Adding
+\[
+F_t=\widetilde C'(t)\cdot C'(u)>0
+\]
+gives \(\sigma'(t)>0\).
 
-### F6 — local cubic span-box admissibility certificate (Session 0009)
-
-On a candidate/reference parameter box
+For cubic spans,
 \[
-T=[t_0,t_1],\qquad U=[u_0,u_1],
-\]
-assume
-\[
-F(t,u_0)>0,\qquad F(t,u_1)<0
-\]
-for all \(t\in T\), and
-\[
-F_u(t,u)<0
-\]
-throughout \(T\times U\).
-
-Then for every \(t\in T\) there is exactly one root \(u=\sigma(t)\in U\). It is the unique minimizer of
-\[
-\Phi(t,u)=\|\widetilde C(t)-C(u)\|^2
-\]
-over that local reference window. If additionally
-\[
-F_t(t,u)=\widetilde C'(t)\cdot C'(u)>0
-\]
-on the box, then \(\sigma'(t)>0\), so the branch is orientation preserving.
-
-For cubic spans the relevant polynomial bidegrees are fixed:
-\[
-\deg F\le(3,5),\quad
-\deg F_u\le(3,4),\quad
+\deg F\le(3,5),
+\qquad
+\deg F_u\le(3,4),
+\qquad
 \deg F_t\le(2,2).
 \]
-Thus admissibility can be certified by local Bernstein/interval sign tests rather than global normal-root enumeration.
 
-Detailed derivation: `docs/internal/derivations/local_normal_branch_certificate.md`.
+### F6 — feasibility gate passed, with explicit limits
+The 2026-09-14 Codex experiment is evidence rather than theorem, but it is strong enough to justify continuing the local-branch line:
 
-## Green predictor refinement
+- ordinary structured close cases certified essentially always, mostly with subdivision depth 0–2;
+- failures concentrated in near-self-approach controls;
+- independent root checks and exact rational Bernstein-sign audits found no local certificate inconsistency;
+- Newton prediction did not materially outperform the simpler first-order predictor;
+- the experiment did **not** establish a whole-curve global correspondence theorem and did **not** certify the maximum implicit-branch deviation.
 
-At the synchronized point \(u=t\), with
+The feedback file is:
+`docs/internal/experiments/normal_branch_certificate_feedback.md`.
+
+## Session 0014 correction of the post-test route
+
+Sessions 0012–0013 explored q-space optimization under
 \[
-B=E\cdot C',\qquad S=\|C'\|^2,
+\|q-\widetilde q\|_G:=\|G_D(q-\widetilde q)\|_\infty.
 \]
-we have
+The observation is mathematically valid, but it was promoted too quickly as the next main-line question.
+
+For the fixed endpoint reconstruction map \(R:q\mapsto C\),
 \[
-F(t,t)=-B,
+\|q-\widetilde q\|_G
+=\|R(q)-R(\widetilde q)\|_\infty.
+\]
+Thus the Green norm is first of all the pullback of synchronized positional \(L^\infty\) through \(D^{-2}\). This coordinate view may become useful for candidate generation later, but it does not by itself establish a new approximation paradigm.
+
+The active main line therefore returns to the pre-test roadmap: finish the geometry-aware verifier far enough to make a tolerance decision, then return to candidate generation.
+
+## New result — extrema along a certified branch are common normals
+
+On a certified smooth branch, set
+\[
+r(t)=\widetilde C(t)-C(\sigma(t)),
 \qquad
-F_u(t,t)=-(S+E\cdot C'').
+\psi(t)=\|r(t)\|^2.
 \]
-Hence the exact one-step Newton predictor is
+Because
+\[
+D(t,u):=\|\widetilde C(t)-C(u)\|^2
+\]
+satisfies
+\[
+D_u=-2F,
+\]
+we have \(D_u=0\) on the branch. Hence
 \[
 \boxed{
-\sigma_N(t)=t-\frac{B}{S+E\cdot C''}.
+\psi'(t)
+=2r(t)\cdot\widetilde C'(t).
 }
 \]
-The earlier predictor \(t-B/S\) is its first-order approximation.
 
-The predictor is not a proof; it is used only to keep the candidate box \(U\) local.
+Define
+\[
+G(t,u):=(\widetilde C(t)-C(u))\cdot\widetilde C'(t).
+\]
+Then every interior branch extremum satisfies
+\[
+\boxed{F(t,u)=0,\qquad G(t,u)=0.}
+\]
 
-## What Session 0009 deliberately did not solve
+For cubic spans,
+\[
+\deg G\le(5,3).
+\]
+Thus, in the generic case, the exact local maximum deviation reduces to finitely many fixed-degree bivariate polynomial intersections plus box boundaries. Degenerate positive-dimensional stationary sets correspond to constant branch deviation and require a separate benign handling path.
 
-- no proof that the local normal foot is the global nearest point on the entire reference curve;
-- no exact maximization of nonlinear normal deviation along the implicit branch;
-- no global reach/tubular-neighbourhood computation;
-- no universal handling of self-approach.
+Detailed derivation:
+`docs/internal/derivations/normal_branch_tolerance.md`.
 
-This is intentional. The certificate is designed as a **fast path for ordinary close curves**, not a universal replacement for Hausdorff computation.
+## Cheap tolerance hierarchy now visible
 
-## Reality / engineering interpretation
+On a certified box:
 
-A practical candidate simplification is expected to remain close to the original. In that regime:
+1. first Bernstein-bound the squared distance polynomial
+   \[
+   D(t,u)=\|\widetilde C(t)-C(u)\|^2,
+   \]
+   whose bidegree is at most \((6,6)\);
+2. if the whole-box bound is already below \(\varepsilon^2\), accept;
+3. otherwise contract/subdivide the box;
+4. if still inconclusive, isolate stationary common-normal roots \(F=G=0\) and evaluate \(D\) there plus at boundaries;
+5. only then fall back to a more general verifier.
 
-1. Green gives an exact synchronized displacement and a cheap branch predictor;
-2. a narrow reference window \(U\) is chosen around that predictor;
-3. fixed-degree sign tests certify a unique local normal branch;
-4. if the certificate fails, the algorithm falls back to synchronized error, subdivision, or a more general verifier.
+This has not yet been numerically tested. It is the current theoretical completion of the single-box tolerance problem.
 
-Failure of the certificate is not failure of the approximation.
+## Important geometric correction — local nearest is stronger than needed
 
-## Current decision gate
+A certified local normal foot need not be the global nearest point to give a directed-distance upper bound:
+\[
+\operatorname{dist}(\widetilde C(t),\operatorname{Im}C)
+\le
+\|\widetilde C(t)-C(\sigma(t))\|.
+\]
+Therefore the near-self-approach cases in the experiment where a certified local foot was not globally nearest do not invalidate upper-bound certification.
 
-The next uncertainty is empirical:
+However, a **full symmetric Hausdorff upper bound** requires either:
 
-> Do these simple sign certificates pass often enough on ordinary close cubic pairs to justify the nonlinear normal layer?
+- a globally stitched, onto, monotone correspondence, or
+- a second certified correspondence in the reverse direction.
 
-This should be tested before proving stronger admissibility theorems. If pass rates are high with little subdivision, the route has engineering value. If not, deeper normal-bundle theory risks becoming an inference game disconnected from the original simplification problem.
+The local box theorem alone does not provide this. This is now the main theoretical gap.
 
-Therefore the next stage is a small numerical feasibility experiment, specified only in pseudocode. No further fine analysis should be added before that gate.
+## Current main question
+
+Develop a **global assembly theorem** for the local certificates, without drifting into a general global nearest-point theory.
+
+Questions for the next session:
+
+- what endpoint / overlap conditions ensure adjacent local branches select the same normal root at shared candidate knots?
+- when do locally increasing branches stitch into a continuous globally increasing map?
+- what guarantees coverage of the reference parameter domain?
+- is it cleaner to certify two directed correspondences rather than enforce a single global bijection?
+- how do double knots and branch windows crossing reference knots affect the stitching conditions?
+
+## Explicitly not active now
+
+- no new global reach/tubular-neighbourhood theory;
+- no further optimization of the Newton predictor;
+- no free-knot / q-space candidate-generation algorithm yet;
+- no claim that the Codex experiment proves industrial success;
+- no TeX stage note yet.
