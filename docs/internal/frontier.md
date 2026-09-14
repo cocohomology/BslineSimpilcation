@@ -167,6 +167,35 @@ However, a **full symmetric Hausdorff upper bound** requires either:
 
 The local box theorem alone does not provide this. This is now the main theoretical gap.
 
+## Session 0015 side result — Hausdorff is too weak for differentiation, and stitching is a Fréchet-style lift
+
+A direct side study of Hausdorff distance versus derivatives/integrals produced three stable conclusions:
+
+1. Pure Hausdorff closeness of image sets does not control derivative vectors, tangent directions, antiderivatives, or curvature. Explicit smooth counterexamples exist even with identical image sets (reparameterization) and with Hausdorff error tending to zero.
+2. Once an ordered correspondence and a second-order regularity bound are fixed, position error controls tangent error at a square-root scale. For synchronized error \(E\),
+   \[
+   \|E\|_\infty\le\varepsilon,
+   \qquad
+   \|E''\|_\infty\le M
+   \]
+   imply, away from boundary effects,
+   \[
+   \|E'\|\le\sqrt{2M\varepsilon}.
+   \]
+3. A globally stitched monotone normal branch should be viewed as a **Fréchet-style ordered lift** of the setwise Hausdorff relation. If \(\sigma\) is a homeomorphism onto the full reference interval, then
+   \[
+   d_H\le d_F
+   \le
+   \max_t\|\widetilde C(t)-C(\sigma(t))\|.
+   \]
+
+Positive reach / local feature size is the natural geometric regularity scale for turning Hausdorff closeness into tangent control; the expected tangent scale is \(O(\sqrt{\varepsilon/\tau})\). However, no inverse control of the project variable \(q=C''\) from Hausdorff error exists under the present assumptions, even with a uniform curvature bound.
+
+Detailed side derivation:
+`docs/internal/derivations/hausdorff_derivative_integral_relations.md`.
+
+This side result does **not** change the active main line. It strengthens the reason for studying global branch assembly: the missing mathematical object is ordered correspondence, not a sharper set-distance formula.
+
 ## Current main question
 
 Develop a **global assembly theorem** for the local certificates, without drifting into a general global nearest-point theory.
@@ -185,4 +214,5 @@ Questions for the next session:
 - no further optimization of the Newton predictor;
 - no free-knot / q-space candidate-generation algorithm yet;
 - no claim that the Codex experiment proves industrial success;
+- no attempt to prove a two-sided equivalence between Hausdorff distance and \(\|C''-\widetilde C''\|\);
 - no TeX stage note yet.
