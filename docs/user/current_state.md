@@ -2,151 +2,121 @@
 
 ## Scope
 
-The research still targets regular \(C^1\), cubic, non-rational spline curves. The structural reduction remains
+The research targets regular \(C^1\), cubic, non-rational spline curves. The structural reduction remains
 \[
 C\xrightarrow{D^2}q=C'',
 \]
 with \(q\) piecewise linear and possibly discontinuous at double knots.
 
-The long-term objective is unchanged: simplify representation complexity under a geometric tolerance, using a structure tighter than global \(L^p\) surrogates but cheaper and more controllable than a full Hausdorff optimization.
+The objective remains: simplify representation complexity under geometric tolerance. The current architecture is:
+
+\[
+\text{simplify in }C''	ext{ domain}
+\rightarrow
+\text{construct candidate}
+\rightarrow
+\text{certify geometric error}.
+\]
 
 ---
 
 ## Stable foundation
 
-### 1. Complexity is exact in the \(C''\) domain
+### 1. Complexity reduction through \(C''\)
 
 For \(C^1\) piecewise cubics,
 \[
-D^2:S_3^1\to PL_{\rm disc}
+D^2:S_3^1\to PL_{disc}
 \]
-is onto with affine kernel. Jumps and continuous kinks of \(C''\) encode double and simple cubic knots, so fixed-degree representation complexity is carried exactly by the second derivative.
+is onto with affine kernel. Jumps and kinks of \(C''\) correspond to knot multiplicity, so the second derivative domain is a natural representation-complexity domain.
 
-### 2. Fixed-endpoint synchronized error is exact and cheap
+### 2. Green synchronized error
 
-With
+For
 \[
-E=C-\widetilde C,
-\qquad e=C''-\widetilde C'',
-\qquad E(a)=E(b)=0,
+E=C-\widetilde C,\qquad e=C''-\widetilde C'',\qquad E(a)=E(b)=0,
 \]
 we have
 \[
 E=G_De.
 \]
-The synchronized max error \(\|E\|_\infty\) is a rigorous Hausdorff upper bound and, for cubic splines, is directly certifiable by fixed-degree one-variable calculations or Bézier subdivision.
+The synchronized displacement is exact, cheap, and certifiable for cubic spans.
 
-### 3. First-order tangent/normal analysis remains useful
+### 3. Local normal correspondence layer
 
-Tangential synchronized displacement is the linearized reparameterization direction; normal displacement is the first-order geometric residual. The earlier tangential correction is now understood as the first Newton/implicit-function step toward the full nonlinear normal correspondence.
+The earlier tangent/normal analysis is retained as a local geometric layer, not as a replacement for the original problem.
 
-The earlier global-curvature upper bound remains mathematically valid but is not treated as a final engineering metric because remote curvature can make it arbitrarily conservative.
-
----
-
-## Latest result — a cheap local admissibility certificate
-
-Following the lesson from Degen, the project now asks for a good geometric correspondence before defining the final deviation norm.
-
-For a candidate point \(\widetilde C(t)\), define
+Define
 \[
 F(t,u)=(\widetilde C(t)-C(u))\cdot C'(u).
 \]
-A normal correspondence is a root branch
+A certified local normal branch satisfies
 \[
 F(t,\sigma(t))=0.
 \]
 
-Take one candidate cubic span \(T=[t_0,t_1]\) and a nearby reference interval \(U=[u_0,u_1]\). If the following signs hold everywhere:
+The branch certificate uses fixed-degree sign tests:
 \[
 F(t,u_0)>0,
-\qquad
-F(t,u_1)<0,
-\qquad
-F_u(t,u)<0,
+\quad F(t,u_1)<0,
+\quad F_u(t,u)<0,
+\quad F_t(t,u)>0.
 \]
-then for every \(t\in T\) there is exactly one normal root
-\[
-\sigma(t)\in U.
-\]
-That root is also the unique local minimizer of the squared distance from \(\widetilde C(t)\) to the reference segment inside \(U\).
 
-If additionally
-\[
-F_t(t,u)=\widetilde C'(t)\cdot C'(u)>0
-\]
-throughout the box, then
-\[
-\sigma'(t)>0,
-\]
-so the certified branch is orientation preserving.
-
-For cubic spans these tests involve only fixed-degree polynomials:
-\[
-\deg F\le(3,5),
-\qquad
-\deg F_u\le(3,4),
-\qquad
-\deg F_t\le(2,2).
-\]
-Therefore tensor-product Bernstein sign tests and local subdivision can certify the branch without enumerating all quintic normal roots or solving a global nearest-point problem.
+For cubic spans these remain low-degree polynomial tests suitable for Bernstein certification and local subdivision.
 
 ---
 
-## Green error now has a concrete geometric role
+## Feasibility experiment result (Session 0011)
 
-The synchronized Green error provides a predictor for where the desired normal root should lie.
+A Codex-generated experiment tested whether the local certificate is practical as a fast path.
 
-Let
-\[
-B=E\cdot C',
-\qquad S=\|C'\|^2.
-\]
-The first-order predictor is
-\[
-\sigma_0(t)=t-\frac{B}{S}.
-\]
-A slightly sharper exact one-step Newton predictor at the synchronized point is
+Important interpretation:
+
+- This is **not** a proof of the theory.
+- Passing does **not** mean the simplification problem is solved.
+- Failure would only expose limitations of the certificate.
+
+Results:
+
+- Ordinary close cubic pairs: 800/800 certified.
+- 799/800 ordinary cases succeeded with subdivision depth 0–2.
+- Near-self-approach negative controls: 124/160 certified; failures concentrated in the expected multi-normal / competing-branch regime.
+
+The experiment supports continuing the local certificate as an engineering verification layer, but does not justify developing a full global normal theory.
+
+---
+
+## Updated research direction
+
+The normal layer has passed its first feasibility gate. The next focus should return to the original bottleneck:
+
 \[
 \boxed{
-\sigma_N(t)=t-\frac{B}{S+E\cdot C''}.
+\text{How to construct a low-complexity approximation of }q=C''?
 }
 \]
 
-These predictors are not proofs; they are used only to choose a narrow reference window \(U\), after which the polynomial sign tests provide the certification.
+The previous work on Green and normal correspondence is now viewed as an error-certification framework:
+
+\[
+q\text{-simplification}
+\rightarrow
+\widetilde C
+\rightarrow
+\text{Green estimate}
+\rightarrow
+\text{optional normal verification}.
+\]
+
+The project should avoid spending excessive effort strengthening admissibility theory unless a concrete obstacle appears.
 
 ---
 
-## Why this remains connected to the original CAD problem
+## Current status
 
-The normal-branch theory is not being developed as a universal differential-geometric theory.
-
-The intended use is a fast path for the ordinary simplification regime:
-
-1. a simplified candidate is expected to stay close to the original;
-2. Green gives a cheap synchronized displacement and branch predictor;
-3. a narrow local normal branch is certified by fixed-degree sign tests;
-4. if the test fails, the method falls back to synchronized error, subdivision, or a more general verifier.
-
-Failure of the certificate is therefore not failure of the approximation.
-
-This avoids forcing rare self-approach or pathological cases into an increasingly elaborate theory.
-
----
-
-## Current gate — theory should pause for a small code experiment
-
-At this point the main unknown is no longer whether a sufficient theorem can be written. It is whether the simple certificate is **practically permissive**.
-
-The next task is a small numerical feasibility test on representative close cubic pairs:
-- mild normal perturbations;
-- mild tangential reparameterization;
-- nonuniform speed and knot spans;
-- moderate curvature;
-- one near-self-approach case as a negative control.
-
-The experiment should record how often the Bernstein sign tests certify the local branch with zero or few subdivisions.
-
-If ordinary close cases pass easily, the nonlinear normal layer is worth developing further. If they routinely fail, the project should stop strengthening the theory and prefer synchronized Green error plus occasional general geometric verification.
-
-So this session reaches **CODE TEST NEEDED: yes**, but only a pseudocode-level experiment plan is required at this stage. No TeX stage note yet.
+- THEORY: stable first framework established.
+- NORMAL CERTIFICATE: promising fast path, not a universal solution.
+- CODE TEST: completed as feasibility evidence only.
+- TEX NOTE: deferred.
+- NEXT MAIN TASK: return to \(C''\)-domain simplification and candidate generation.
