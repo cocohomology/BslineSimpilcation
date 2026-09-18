@@ -222,7 +222,45 @@ Why it is parked:
 
 ---
 
-## 12. Reminder to future work
+## 12. Parameter gauge and intrinsic moving-frame variables — NEW IN SESSION 0017
+
+Observed bad-parameter behavior in the Lyche/Lp branch makes this a concrete future candidate-generation issue rather than a purely geometric curiosity.
+
+For a regular curve,
+\[
+C''=v'T+v^2K,
+\qquad
+K=dT/ds.
+\]
+The tangential term \(v'T\) is parameter-speed gauge; \(K\) is geometric. This immediately explains the straight-line pathology: \(K=0\) even if raw \(C''\) is complicated.
+
+A Bishop frame provides intrinsic coefficients \((k_1,k_2)\) that remain regular through zero curvature. With aligned initial frame, coefficient error \(\delta\) obeys
+\[
+\|T-\widetilde T\|\le\int\delta,
+\qquad
+\|C-\widetilde C\|\le\int (s-r)\delta(r)\,dr,
+\]
+so
+\[
+d_H(C,\widetilde C)\le \frac{L^2}{2}\|\delta\|_\infty.
+\]
+
+Why it may matter: this is the first genuinely parameter-invariant candidate variable encountered in the project with a direct quantitative transport to positional/Hausdorff error.
+
+Why it is not yet the main line: arc-length conversion and intrinsic reconstruction lose the exact PL/spline complexity dictionary, and reconstructed curves are not automatically B-splines.
+
+Two possible engineering bridges:
+- reparameterization/gauge fixing first, then return to \(q=C''\);
+- intrinsic simplification first, spline recovery last.
+
+**Reopen if:** Phase 5 begins, or a real input is shown to have low intrinsic complexity but high raw \(C''\)/knot complexity because of speed variation.
+
+Detailed derivation:
+docs/internal/derivations/bad_parameter_intrinsic_routes.md
+
+---
+
+## 13. Reminder to future work
 
 These entries are **not a queue**. They are memory anchors.
 

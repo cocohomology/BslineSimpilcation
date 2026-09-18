@@ -235,6 +235,89 @@ Each local cover uses:
 
 No global root-selection topology or branch interface equality is required.
 
+## Session 0017 — bad parameterization changes the Phase-5 design constraint
+
+The Lyche/Lp replication branch has now exposed bad parameterization as a concrete obstacle rather than a hypothetical one. A raw derivative-domain candidate generator must therefore be audited for parameter-gauge sensitivity before Phase 5 begins.
+
+### F11 — derivative-image Hausdorff does not survive integration
+
+Even in the \(C^1\) piecewise-quadratic toy case, \(V=C'\) and \(\widetilde V=\widetilde C'\) can be continuous PL curves with identical images,
+\[
+d_H(\operatorname{Im}V,\operatorname{Im}\widetilde V)=0,
+\]
+while their integrated curve images have positive Hausdorff distance. Therefore setwise geometric simplification of the derivative polyline is not enough; integration requires a coherent time/order assignment.
+
+With a same-domain derivative approximation
+\[
+\|V-\widehat V\|_\infty\le\varepsilon,
+\]
+one integration gives
+\[
+\|C-\widehat C\|_\infty\le L\varepsilon,
+\]
+and common endpoints improve this to
+\[
+\|C-\widehat C\|_\infty\le \frac L2\varepsilon.
+\]
+
+### F12 — exact speed-gauge / shape decomposition
+
+For a regular curve,
+\[
+C'=vT,
+\qquad
+\boxed{C''=v'T+v^2K},
+\qquad
+K=\frac{dT}{ds}
+=\frac{P_{T^\perp}C''}{\|C'\|^2}.
+\]
+The tangential term \(v'T\) is pure parameter-speed complexity. In particular, a geometrically straight line has \(K=0\) under every regular parameterization even when raw \(C''\) is arbitrarily complicated.
+
+This is the clearest current explanation of why a raw \(q=C''\) simplifier can inherit the same bad-parameter pathology as an \(L^p\) spline approximator.
+
+### F13 — intrinsic Bishop-frame transport
+
+For arc-length curves with aligned initial point/frame and Bishop coefficients \((k_1,k_2)\), \((\widetilde k_1,\widetilde k_2)\), define
+\[
+\delta(s)=\sqrt{(k_1-\widetilde k_1)^2+(k_2-\widetilde k_2)^2}.
+\]
+Then the skew-symmetric frame ODE gives
+\[
+\|T(s)-\widetilde T(s)\|
+\le
+\int_0^s\delta(r)\,dr,
+\]
+and
+\[
+\|C(s)-\widetilde C(s)\|
+\le
+\int_0^s(s-r)\delta(r)\,dr.
+\]
+Hence
+\[
+\boxed{
+d_H(C,\widetilde C)
+\le
+\frac{L^2}{2}\|\delta\|_\infty.
+}
+\]
+This is a parameter-invariant analogue of Green transport. Bishop data are preferred to Frenet curvature/torsion near zero-curvature regions.
+
+Detailed derivation:
+docs/internal/derivations/bad_parameter_intrinsic_routes.md
+
+### Phase-5 consequence
+
+The first candidate-generation question is no longer simply "how to simplify \(q=C''\)?" It is:
+
+> Which part of the observed complexity is parameter gauge, and which part is geometric shape?
+
+Two future bridges are now explicit:
+- geometry-preserving parameter gauge fixing before the existing \(q\)-space machinery;
+- intrinsic candidate generation followed by spline recovery and the existing Hausdorff verifier.
+
+This does not alter the current Phase-4 verifier gate.
+
 ## Current decision gate
 
 Run one targeted feasibility experiment before declaring Phase 4 complete.

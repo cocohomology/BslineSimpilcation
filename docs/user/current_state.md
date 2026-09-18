@@ -156,6 +156,36 @@ This also cleanly separates two notions:
 
 ---
 
+## New candidate-generation constraint — bad parameterization is not shape complexity
+
+The Lyche/Lp replication branch has now made the bad-parameter problem concrete. Session 0017 studied whether the independent route can address it.
+
+A useful exact identity is
+\[
+\boxed{
+C''=v'T+v^2K,
+}
+\]
+where \(v=\|C'\|\), \(T\) is the unit tangent, and \(K=dT/ds\) is the curvature vector. The tangential term \(v'T\) is pure parameter-speed complexity. Thus a straight line can have highly complicated raw \(C''\) while its intrinsic geometry has \(K=0\).
+
+This means the future candidate-generation phase cannot blindly assume that raw \(q=C''\) is always the correct optimization variable.
+
+Two facts were established:
+
+- In the \(C^1\) quadratic toy case, Hausdorff simplification of the derivative polyline **as a set** is insufficient: two derivative PL curves can have identical images while their integrated quadratic curves are geometrically different.
+- If a coherent derivative correspondence gives \(\|C'-\widetilde C'\|_\infty\le\varepsilon\), then integration is stable: \(\|C-\widetilde C\|_\infty\le L\varepsilon\), improved to \(L\varepsilon/2\) when both endpoints are fixed.
+
+A deeper intrinsic alternative uses a Bishop frame. If two arc-length curves have nearby Bishop curvature coefficients, their tangent and position errors are controlled by direct integrals of the coefficient error; in particular a uniform intrinsic coefficient error \(\eta\) gives a positional/Hausdorff bound of order \(L^2\eta/2\).
+
+The practical implication is not an immediate pivot. Instead, Phase 5 must first decide whether to:
+
+- **gauge-fix the parameterization** and then use the existing \(q=C''\) spline algebra; or
+- generate candidates from **intrinsic shape variables** and recover a spline representation afterward.
+
+Detailed note:
+docs/internal/derivations/bad_parameter_intrinsic_routes.md
+
+
 ## Next gate
 
 The next task is a targeted code feasibility experiment, using the existing structured suite, to test:

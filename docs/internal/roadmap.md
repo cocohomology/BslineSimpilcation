@@ -138,19 +138,63 @@ Failure signal:
 
 After this gate, perform one short adversarial/theory review of any exposed failure mode. Do not invent new global topology theory unless the data forces it.
 
-## Phase 5 — candidate generation in \(q=C''\) space
+## Phase 5 — candidate generation with an explicit parameter-gauge decision
 
-Status: **next main phase if Task 4.3 is satisfactory.**
+Status: **next main phase if Task 4.3 is satisfactory; design constraint updated by Session 0017.**
 
-The main problem will be
+The earlier plan began directly from
 \[
-\text{low-complexity }PL_{\rm disc}\text{ approximation of }q=C''
+q=C''.
 \]
-with kink cost 1 and jump cost 2.
+That is no longer safe as a universal assumption. Session 0017 established
+\[
+C''=v'T+v^2K,
+\]
+so raw \(C''\) mixes pure speed-gauge complexity with geometric turning.
 
-Sessions 0012–0013 explored direct Green-induced optimization and are parked. When Phase 5 begins, revisit `docs/internal/theory_seeds.md`, especially:
+### Task 5.0 — classify parameter complexity versus shape complexity
+
+Before choosing a simplification variable, test whether the difficult input is dominated by:
+- tangential acceleration / bad speed law;
+- genuine geometric curvature/torsion complexity;
+- both.
+
+The straight-line bad-parameter case must be a mandatory baseline: any proposed universal candidate generator should recognize that arbitrary positive speed variation does not change the geometric line.
+
+### Two candidate architectures to compare later
+
+**A. Gauge-fix then use spline algebra**
+\[
+\text{bad parameterization}
+\to
+\text{geometry-preserving reparameterized spline}
+\to
+q\text{-space simplification}
+\to
+\text{Hausdorff certification}.
+\]
+
+**B. Intrinsic candidate generation**
+\[
+T(s)\text{ / Bishop data}
+\to
+\text{simple intrinsic model}
+\to
+\text{curve reconstruction}
+\to
+\text{spline recovery}
+\to
+\text{Hausdorff certification}.
+\]
+
+Architecture A preserves the exact spline-complexity dictionary after preprocessing. Architecture B is more genuinely parameter-invariant but loses direct polynomial/B-spline structure.
+
+The quadratic derivative-polyline toy model should be used first to understand this tradeoff: pure derivative-image Hausdorff is insufficient, but a coherent derivative correspondence integrates with constants \(L\) or \(L/2\) under endpoint preservation.
+
+When Phase 5 begins, revisit:
 - nonlinear/free-breakpoint PL approximation;
 - moment-localized Hermite block coarsening;
+- parameter gauge / intrinsic Bishop variables;
 - possible dynamic-programming / shortest-path restricted baselines.
 
 ## TeX note decision
